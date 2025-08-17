@@ -1,0 +1,10 @@
+# Text editor files
+.vscode/
+.vs/
+
+# Git functional files
+!.gitkeep
+
+# Global ignore files
+.env
+data/
