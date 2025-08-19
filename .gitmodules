@@ -1,0 +1,3 @@
+[submodule "modules/Pocco.Client.Shared"]
+	path = modules/Pocco.Client.Shared
+	url = https://github.com/ggg-alpha/Pocco.Client.Shared.git
