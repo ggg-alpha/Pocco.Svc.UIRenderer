@@ -1,0 +1,30 @@
+@page "/register"
+@layout Layouts.WelcomeLayout
+
+<div class="register-wrapper">
+    <div class="register-header">
+        <img src="_content/Pocco.Client.Shared/assets/logos/pocco-icon.png" alt="Pocco Logo" class="login-logo">
+        <h1 class="register-title">登録</h1>
+    </div>
+    <div class="register-form">
+        <div class="username-input">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" @bind-value="email" required>
+        </div>
+        <div class="password-input">
+            <label for="password">パスワード</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password"
+                @bind-value="password" required>
+        </div>
+
+        <button type="submit" class="register-btn">
+            <span class="btn-text">登録</span>
+            <span class="btn-spinner"></span>
+        </button>
+
+        <div class="gotto-register-text">
+            <span>アカウントを既にお持ちですか？</span>
+            <button class="login-link" @onclick="() => GoToLoginPage()">ログイン</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+.apps-container {
+    height: 100vh;
+    width: 100vw;
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color: #f0f0f0;
+}
+
+.apps-contents {
+    height: 100%;
+    width: 100%;
+}

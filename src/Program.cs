@@ -1,4 +1,4 @@
-using Pocco.Client.Web.Components;
+using Pocco.Client.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +22,6 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddAdditionalAssemblies(typeof(Pocco.Client.Shared._Imports).Assembly);
+    .AddInteractiveServerRenderMode();
 
 app.Run();
