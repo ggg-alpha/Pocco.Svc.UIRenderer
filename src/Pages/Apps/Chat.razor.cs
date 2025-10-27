@@ -116,12 +116,13 @@ partial class Chat : ComponentBase
         // Clear previous messages
         org.Messages.Clear();
 
-        var rnd = new Random().Next(0, 25);
+        var random = new Random();
+        var rnd = random.Next(0, 25);
 
         // Generate a random message
         for (int i = 0; i < rnd; i++)
         {
-            var user = org.Users[new Random().Next(org.Users.Count)];
+            var user = org.Users[random.Next(org.Users.Count)];
             var message = new Message
             {
                 Content = $"Message {i + 1} from {user.Name}",
