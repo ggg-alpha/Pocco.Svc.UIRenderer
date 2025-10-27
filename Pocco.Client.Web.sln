@@ -5,13 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pocco.Client.Web", "src\Pocco.Client.Web.csproj", "{1CA08A16-C96D-4BA4-8332-0A74C293BFC8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{CA253913-39DE-BFD0-C9A3-4B7EC6FBDF17}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pocco.Client.Shared", "Pocco.Client.Shared", "{2119260F-07EF-9D98-2085-1F81F2388A23}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5D7E0276-06D0-0E51-5205-305BB5C4F519}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pocco.Client.Shared", "modules\Pocco.Client.Shared\src\Pocco.Client.Shared.csproj", "{BD324804-A4DA-4F4C-BF34-98D9180D4318}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,25 +29,8 @@ Global
 		{1CA08A16-C96D-4BA4-8332-0A74C293BFC8}.Release|x64.Build.0 = Release|Any CPU
 		{1CA08A16-C96D-4BA4-8332-0A74C293BFC8}.Release|x86.ActiveCfg = Release|Any CPU
 		{1CA08A16-C96D-4BA4-8332-0A74C293BFC8}.Release|x86.Build.0 = Release|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Debug|x64.Build.0 = Debug|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Debug|x86.Build.0 = Debug|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Release|x64.ActiveCfg = Release|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Release|x64.Build.0 = Release|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Release|x86.ActiveCfg = Release|Any CPU
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2119260F-07EF-9D98-2085-1F81F2388A23} = {CA253913-39DE-BFD0-C9A3-4B7EC6FBDF17}
-		{5D7E0276-06D0-0E51-5205-305BB5C4F519} = {2119260F-07EF-9D98-2085-1F81F2388A23}
-		{BD324804-A4DA-4F4C-BF34-98D9180D4318} = {5D7E0276-06D0-0E51-5205-305BB5C4F519}
 	EndGlobalSection
 EndGlobal
