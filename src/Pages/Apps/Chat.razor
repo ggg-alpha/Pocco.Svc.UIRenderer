@@ -1,0 +1,162 @@
+@page "/apps/chat"
+
+<div class="apps-chat">
+    <div class="chat-area component active">
+        <div class="sidebar">
+            <!-- 組織セレクター -->
+            <div class="org-selector">
+                <div class="current-org" @onclick="ToggleOrgs">
+                    <img src="https://picsum.photos/32/32?random=@_currentOrganization.Id" alt="組織アイコン"
+                        class="org-icon">
+                    <span class="org-name">@_currentOrganization.Name</span>
+                    <span class="material-symbols-outlined">expand_more</span>
+                </div>
+                <div class="org-list" style="display: @_displayOrgs;">
+                    @foreach (var org in _organizations)
+                    {
+                        @if (org.Id == _currentOrganization.Id) continue;
+                        <div class="org-item" @onclick="() => SelectOrganization(_organizations.IndexOf(org))">
+                            <img src=" https://picsum.photos/32/32?random=@org.Id" alt="組織アイコン" class="org-icon">
+                            <span class="org-name">@org.Name</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- アプリグリッド -->
+            <div class="app-grid">
+                <div class="app-item" title="ルール">
+                    <span class="material-symbols-outlined">gavel</span>
+                </div>
+                <div class="app-item" title="カレンダー">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                </div>
+                <div class="app-item" title="看板ボード">
+                    <span class="material-symbols-outlined">view_kanban</span>
+                </div>
+                <div class="app-item" title="ガントチャート">
+                    <span class="material-symbols-outlined">stacked_bar_chart</span>
+                </div>
+                <div class="app-item" title="トレンド">
+                    <span class="material-symbols-outlined">trending_up</span>
+                </div>
+                <div class="app-item" title="メンバー">
+                    <span class="material-symbols-outlined">groups</span>
+                </div>
+                <div class="app-item" title="設定">
+                    <span class="material-symbols-outlined">settings</span>
+                </div>
+                <div class="app-item" title="ヘルプ">
+                    <span class="material-symbols-outlined">help</span>
+                </div>
+            </div>
+
+            <hr style="width: 95%; margin: 5px;" />
+
+            <!-- チャンネルリスト -->
+            <div class="channel-list">
+                @foreach (var channel in _currentOrganization.Channels)
+                {
+                    if (channel is not CategoryChannel)
+                    {
+                        <div class="channel-item" @onclick="() => SelectChannel(_currentOrganization)">
+                            <span class="material-symbols-outlined">tag</span>
+                            <span class="channel-name">@channel.Name</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="channel-category">
+                            <div class="category-header">
+                                <span class="material-symbols-outlined">expand_more</span>
+                                <span class="category-name">@channel.Name</span>
+                            </div>
+                            <div class="channel-items">
+                                @foreach (var subChannel in ((CategoryChannel)channel).Channels)
+                                {
+                                    <div class="channel-item" @onclick="() => SelectChannel(_currentOrganization)">
+                                        <span class=" material-symbols-outlined">tag</span>
+                                        <span class="channel-name">@subChannel.Name</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="content">
+            <div class="channel-header">
+                <div class="channel-info">
+                    <span class="material-symbols-outlined">tag</span>
+                    <span class="channel-name">@_currentOrganization.CurrentChannel</span>
+                </div>
+            </div>
+            <div class="messages">
+                <!-- サンプルメッセージ -->
+                @foreach (var message in _currentOrganization.Messages)
+                {
+                    <div class="message">
+                        <img src="https://picsum.photos/40/40?random=2" alt="ユーザーアバター" class="user-avatar">
+                        <div class="message-content">
+                            <div class="message-header">
+                                <span class="user-name">@message.Author.Name</span>
+                                <span class="timestamp">@message.Timestamp.ToString("HH:mm")</span>
+                            </div>
+                            <div class="message-text">@message.Content</div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="message-input">
+                <div class="input-container">
+                    <div class="action-menu-container">
+                        <button class="action-menu-button" title="アクション">
+                            <span class="material-symbols-outlined">add</span>
+                        </button>
+                        <div class="action-menu">
+                            <button class="action-item">
+                                <span class="material-symbols-outlined">upload_file</span>
+                                <span>ファイルを添付</span>
+                            </button>
+                            <button class="action-item">
+                                <span class="material-symbols-outlined">event</span>
+                                <span>投票を作成</span>
+                            </button>
+                            <button class="action-item">
+                                <span class="material-symbols-outlined">code</span>
+                                <span>コードスニペット</span>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="text" placeholder="メッセージを入力..." class="message-text-input">
+                    <button class="emoji-button" title="絵文字とステッカー">
+                        <span class="material-symbols-outlined">mood</span>
+                    </button>
+                    <button class="send-button">
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="member-list">
+            <div class="member-search">
+                <div class="search-box">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" placeholder="組織内を検索...">
+                </div>
+            </div>
+            @foreach (var member in _currentOrganization.Users)
+            {
+                <div class="member-item">
+                    <img src="https://picsum.photos/32/32?random=1" alt="ユーザーアイコン" class="member-avatar">
+                    <div class="member-status @member.Status.Status.ToString().ToLower()"></div>
+                    <div class="member-info">
+                        <div class="member-name">@member.Name</div>
+                        <div class="member-status-message">@member.Status.CustomStatus</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

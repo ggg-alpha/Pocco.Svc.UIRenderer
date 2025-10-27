@@ -1,0 +1,25 @@
+@inherits ComponentBase
+
+<aside class="sidebar">
+    <button class="sidebar-item chat" title="チャット" @onclick="() => NavigateToChat()">
+        <span class="material-symbols-outlined">chat</span>
+    </button>
+    <button class="sidebar-item calendar" title="カレンダー" @onclick="() => NavigateToCalendar()">
+        <span class="material-symbols-outlined">calendar_month</span>
+    </button>
+    <button class="sidebar-item spreadsheet" title="スプレッドシート" @onclick="() => NavigateToSpreadsheet()">
+        <span class="material-symbols-outlined">grid_on</span>
+    </button>
+    <button class="sidebar-item whiteboard" title="ホワイトボード" @onclick="() => NavigateToWhiteboard()">
+        <span class="material-symbols-outlined">format_paint</span>
+    </button>
+    <button class="sidebar-item video" title="動画" @onclick="() => NavigateToVideo()">
+        <span class="material-symbols-outlined">smart_display</span>
+    </button>
+    <button class="sidebar-item photo" title="写真" @onclick="() => NavigateToPhoto()">
+        <span class="material-symbols-outlined">photo_library</span>
+    </button>
+    <button class="sidebar-item forum" title="フォーラム" @onclick="() => NavigateToForum()">
+        <span class="material-symbols-outlined">forum</span>
+    </button>
+</aside>
