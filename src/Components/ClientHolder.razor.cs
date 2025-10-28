@@ -145,6 +145,8 @@ public partial class ClientHolder : ComponentBase
                 Logger.LogInformation($"beforeClientCount updated to {beforeClientCount}");
                 StateHasChanged();
             }
+
+            await Task.Delay(1000);
         } while (!isDisposed);
     }
 }
