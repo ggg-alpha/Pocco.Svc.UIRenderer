@@ -5,7 +5,7 @@ using Pocco.Client.Web.Services;
 
 namespace Pocco.Client.Web.Components;
 
-public partial class ClientHolder : ComponentBase
+public partial class ClientHolder : ComponentBase, IDisposable
 {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Inject] protected ILogger<ClientHolder> Logger { get; set; } = null!;
@@ -17,6 +17,7 @@ public partial class ClientHolder : ComponentBase
     private int beforeClientCount = 0;
     private bool isDisposed = false;
     private Task _updateSupresserTask = null!;
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,7 +147,16 @@ public partial class ClientHolder : ComponentBase
                 StateHasChanged();
             }
 
-            await Task.Delay(1000);
+            await Task.Delay(1000, _cancellationTokenSource.Token);
         } while (!isDisposed);
+    }
+
+    public void Dispose()
+    {
+        isDisposed = true;
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+
+        GC.SuppressFinalize(this);
     }
 }
