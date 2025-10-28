@@ -46,6 +46,22 @@
         align-items: flex-start;
         gap: 5px;
 
+        .input-info {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+
+            #emailError {
+                color: red;
+                font-size: 12px;
+            }
+
+            #passwordError {
+                color: red;
+                font-size: 12px;
+            }
+        }
+
         label {
             font-size: 14px;
             color: #215a6b;
@@ -60,6 +76,15 @@
             font-size: 20px;
             box-sizing: border-box;
             transition: border-color 0.3s ease;
+
+            &.error {
+                border-color: red;
+
+                &:focus {
+                    border-color: red;
+                    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+                }
+            }
 
             &:focus {
                 border-color: #215a6b;
