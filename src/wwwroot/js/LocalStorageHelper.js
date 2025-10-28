@@ -1,6 +1,6 @@
 window.onbeforeunload = function () {
     let connectedClients = localStorage.getItem("connectedClients");
-    if (connectedClients == null) {
+    if (connectedClients === null) {
         connectedClients = "0";
     }
     let count = parseInt(connectedClients);
