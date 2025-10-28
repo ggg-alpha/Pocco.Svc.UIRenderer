@@ -64,8 +64,6 @@ public partial class ClientHolder : ComponentBase, IDisposable
                                 ServiceProvider.Remove(service.Id);
                                 service = null;
                             }
-
-                            await Task.CompletedTask;
                         };
                     }
 
@@ -99,8 +97,6 @@ public partial class ClientHolder : ComponentBase, IDisposable
                             ServiceProvider.Remove(service.Id);
                             service = null;
                         }
-
-                        await Task.CompletedTask;
                     };
                 }
 
