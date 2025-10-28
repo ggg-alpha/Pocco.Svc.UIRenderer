@@ -1,0 +1,14 @@
+@inherits ComponentBase
+
+<div class="scoped-injector">
+    @ChildContent
+
+    @if (service != null)
+    {
+        <div>Service ID: <span>@service.Id</span> | Active: <span>@connectedClientCount</span></div>
+    }
+    else
+    {
+        <div>Loading service...</div>
+    }
+</div>
