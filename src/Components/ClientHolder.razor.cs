@@ -134,14 +134,7 @@ public partial class ClientHolder : ComponentBase, IDisposable
                 StateHasChanged();
             }
 
-            // Update beforeClientCount
-            var bfcCache = beforeClientCount;
             beforeClientCount = connectedClientCount;
-            if (bfcCache != beforeClientCount)
-            {
-                Logger.LogInformation($"beforeClientCount updated to {beforeClientCount}");
-                StateHasChanged();
-            }
 
             await Task.Delay(1000, _cancellationTokenSource.Token);
         } while (!isDisposed);
