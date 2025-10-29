@@ -1,5 +1,7 @@
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
+using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Services;
 
@@ -11,12 +13,18 @@ public class GrpcClientFeeder : IDisposable
     // private readonly Task _exampleLoopableTask;
     private readonly CancellationTokenSource _cancellationTokenSource;
 
+    private readonly V0ApiService.V0ApiServiceClient _v0Api;
+
     public GrpcClientFeeder(Guid id, [FromServices] ILogger<ComponentBase> logger)
     {
         Id = id;
         _logger = logger;
         _cancellationTokenSource = new CancellationTokenSource();
         // _exampleLoopableTask = Task.Run(() => ExampleLoopableTask(cts.Token), cts.Token);
+
+        var apiConnectionString = Environment.GetEnvironmentVariable("POCCO_SVC_COREAPI_GRPC_CONNECTION_STRING") ?? "https://localhost:7073";
+        var channel = GrpcChannel.ForAddress(apiConnectionString);
+        _v0Api = new V0ApiService.V0ApiServiceClient(channel);
 
         _logger.LogInformation("GrpcClientFeeder {Id} created", Id);
     }
