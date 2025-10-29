@@ -8,3 +8,4 @@
 # Global ignore files
 .env
 data/
+[Nn]u[Gg]et.config
