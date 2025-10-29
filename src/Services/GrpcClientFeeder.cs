@@ -1,3 +1,4 @@
+using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ public class GrpcClientFeeder : IDisposable
         _cancellationTokenSource = new CancellationTokenSource();
         // _exampleLoopableTask = Task.Run(() => ExampleLoopableTask(cts.Token), cts.Token);
 
-        var apiConnectionString = Environment.GetEnvironmentVariable("POCCO_SVC_COREAPI_GRPC_CONNECTION_STRING") ?? "https://localhost:7073";
+        var apiConnectionString = Environment.GetEnvironmentVariable("API_CONNECTION_URL") ?? "https://localhost:7073";
         var channel = GrpcChannel.ForAddress(apiConnectionString);
         _v0Api = new V0ApiService.V0ApiServiceClient(channel);
 
