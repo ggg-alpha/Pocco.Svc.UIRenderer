@@ -8,11 +8,13 @@ namespace Pocco.Client.Web.Components;
 public partial class ClientHolder : ComponentBase, IDisposable
 {
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    public GrpcClientFeeder? Service;
+
     [Inject] protected ILogger<ClientHolder> Logger { get; set; } = null!;
     [Inject] protected CircuitHandler CircuitHandler { get; set; } = null!;
+
     [Inject] private GrpcClientFeederProvider ServiceProvider { get; set; } = null!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-    private GrpcClientFeeder? service;
     private int connectedClientCount = 0;
     private int beforeClientCount = 0;
     private bool isDisposed = false;
@@ -43,26 +45,26 @@ public partial class ClientHolder : ComponentBase, IDisposable
             var id = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "scopedServiceId");
             if (!string.IsNullOrEmpty(id) && Guid.TryParse(id, out var guid))
             {
-                service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, Logger));
-                if (service is not null)
+                Service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, Logger));
+                if (Service is not null)
                 {
-                    Logger.LogInformation($"Retrieved existing scoped service ID from session storage: {service.Id}");
+                    Logger.LogInformation($"Retrieved existing scoped service ID from session storage: {Service.Id}");
 
                     if (CircuitHandler is CircuitClosureDetector handler)
                     {
-                        Logger.LogInformation($"Adding circuit disconnected handler for scoped service ID: {service.Id}");
+                        Logger.LogInformation($"Adding circuit disconnected handler for scoped service ID: {Service.Id}");
 
                         handler.Disconnected += async (circuit) => // TODO: ページを切り替えるごとにイベントが追加されてしまう問題を解決する
                         {
                             isDisposed = true;
 
-                            Logger.LogInformation($"Circuit disconnected event triggered for scoped service ID: {service.Id} (connected clients: {connectedClientCount})");
+                            Logger.LogInformation($"Circuit disconnected event triggered for scoped service ID: {Service.Id} (connected clients: {connectedClientCount})");
 
-                            if (service is not null && connectedClientCount == 0)
+                            if (Service is not null && connectedClientCount == 0)
                             {
-                                Logger.LogInformation($"Circuit disconnected. Removing scoped service ID: {service.Id}");
-                                ServiceProvider.Remove(service.Id);
-                                service = null;
+                                Logger.LogInformation($"Circuit disconnected. Removing scoped service ID: {Service.Id}");
+                                ServiceProvider.Remove(Service.Id);
+                                Service = null;
                             }
                         };
                     }
@@ -79,7 +81,7 @@ public partial class ClientHolder : ComponentBase, IDisposable
             else
             {
                 var newId = Guid.NewGuid();
-                service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, Logger));
+                Service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, Logger));
 
                 // Store id in session storage
                 await JSRuntime.InvokeVoidAsync("localStorage.setItem", "scopedServiceId", newId.ToString());
@@ -91,11 +93,11 @@ public partial class ClientHolder : ComponentBase, IDisposable
                     {
                         isDisposed = true;
 
-                        if (service is not null && connectedClientCount == 0)
+                        if (Service is not null && connectedClientCount == 0)
                         {
-                            Logger.LogInformation($"Circuit disconnected. Removing scoped service ID: {service.Id}");
-                            ServiceProvider.Remove(service.Id);
-                            service = null;
+                            Logger.LogInformation($"Circuit disconnected. Removing scoped service ID: {Service.Id}");
+                            ServiceProvider.Remove(Service.Id);
+                            Service = null;
                         }
                     };
                 }
