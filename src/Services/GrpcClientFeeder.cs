@@ -6,7 +6,7 @@ using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Services;
 
-public class GrpcClientFeeder : IDisposable
+public partial class GrpcClientFeeder : IDisposable
 {
     public readonly Guid Id;
 
@@ -37,5 +37,25 @@ public class GrpcClientFeeder : IDisposable
         _logger.LogInformation("GrpcClientFeeder {Id} disposed", Id);
 
         GC.SuppressFinalize(this);
+    }
+
+    private static Metadata ContextConvertToMetadata(HttpContext context)
+    {
+        var metadata = new Metadata();
+        foreach (var header in context.Request.Headers)
+        {
+            if (header.Key.Equals("Content-Length", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (string.IsNullOrEmpty(header.Value))
+            {
+                continue;
+            }
+
+            metadata.Add(header.Key, header.Value.ToString());
+        }
+        return metadata;
     }
 }
