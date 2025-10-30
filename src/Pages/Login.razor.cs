@@ -1,11 +1,16 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using Pocco.Client.Web.Clients;
 
 namespace Pocco.Client.Web.Pages;
 
 partial class Login : ComponentBase
 {
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private ILogger<Login> Logger { get; set; } = null!;
+    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
+    [Inject] private AuthClient AuthClient { get; set; } = null!;
 
     private string email = string.Empty;
     private string emailError = string.Empty;
@@ -40,7 +45,7 @@ partial class Login : ComponentBase
         await Task.CompletedTask;
     }
 
-    private void HandleLogin()
+    private async Task HandleLogin()
     {
         // Dummy login logic
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
@@ -51,17 +56,29 @@ partial class Login : ComponentBase
 
         // Set loading state
         isLoading = true;
-        // Simulate login logic
-        if (email is "s@g.com" && password is "123456")
+
+        try
         {
-            // Navigate to home page on successful login
+            var response = await AuthClient.AuthenticateAsync(email, password);
+
+            // Store session data to local storage
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "sessionData", response.ToString());
+
             NavigationManager.NavigateTo("/apps");
         }
-        else
+        catch (Exception ex)
         {
-            // Handle login failure (e.g., show error message)
+            emailError = "Invalid email.";
+            hasEmailError = true;
+            passwordError = "Invalid password.";
+            hasPasswordError = true;
+
+            Console.WriteLine($"Login failed: {ex.Message}");
         }
-        isLoading = false;
+        finally
+        {
+            isLoading = false;
+        }
     }
 
     private void GoToRegisterPage()

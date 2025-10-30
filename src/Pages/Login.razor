@@ -26,7 +26,8 @@
                 @bind="password" required>
         </div>
 
-        <button type="submit" class="login-btn" @onclick="HandleLogin" disabled="@isLoading">
+        <button type="submit" class="login-btn" @onclick="async () => await HandleLogin()"
+            disabled="@(isLoading || hasEmailError || hasPasswordError || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))">
             <span class="btn-text">ログイン</span>
         </button>
 
@@ -36,3 +37,5 @@
         </div>
     </div>
 </div>
+
+<ClientHolder />
