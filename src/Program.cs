@@ -1,6 +1,8 @@
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.DataProtection;
 using Pocco.Client.Web;
+using Pocco.Client.Web.Clients;
 using Pocco.Client.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDataProtection();
 
+builder.Services.AddSingleton(sp =>
+{
+    var connectionString = Environment.GetEnvironmentVariable("API_CONNECTION_URL") ?? throw new InvalidOperationException("API_CONNECTION_URL is not set in environment variables");
+    var grpcChannel = GrpcChannel.ForAddress(connectionString, new GrpcChannelOptions
+    {
+        HttpHandler = new SocketsHttpHandler
+        {
+            PooledConnectionIdleTimeout = TimeSpan.FromMinutes(5),
+            KeepAlivePingDelay = TimeSpan.FromMinutes(1),
+            KeepAlivePingTimeout = TimeSpan.FromSeconds(20),
+            EnableMultipleHttp2Connections = true
+        }
+    });
+    return grpcChannel;
+});
+builder.Services.AddScoped<AuthClient>();
 builder.Services.AddSingleton<GrpcClientFeederProvider>();
 builder.Services.AddScoped<CircuitHandler, CircuitClosureDetector>();
 
