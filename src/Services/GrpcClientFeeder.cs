@@ -39,23 +39,23 @@ public partial class GrpcClientFeeder : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private static Metadata ContextConvertToMetadata(HttpContext context)
+    /// <summary>
+    /// V0ApiSessionDataからgRPCのMetadataに変換する
+    /// </summary>
+    /// <param name="context">ページ内のContext</param>
+    /// <returns><seealso cref="Metadata"/></returns>
+    private static Metadata CreateMetadata(V0ApiSessionData data)
     {
-        var metadata = new Metadata();
-        foreach (var header in context.Request.Headers)
+        var metadata = new Metadata
         {
-            if (header.Key.Equals("Content-Length", StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
+            { "Authorization", $"Bearer {data.Token}" },
+            { "x-session-id", data.SessionId },
+            { "x-account-id", data.AccountId },
+            { "x-created-at", data.CreatedAt.ToString() },
+            { "x-expires-at", data.ExpiresAt.ToString() },
+            { "x-updated-at", data.UpdatedAt.ToString() }
+        };
 
-            if (string.IsNullOrEmpty(header.Value))
-            {
-                continue;
-            }
-
-            metadata.Add(header.Key, header.Value.ToString());
-        }
         return metadata;
     }
 }

@@ -32,9 +32,9 @@ public partial class GrpcClientFeeder
     /// </summary>
     /// <param name="cancellationToken">タスクのキャンセル</param>
     /// <returns><seealso cref="Empty"/></returns>
-    public async Task<Empty> UnregisterAccountAsync(HttpContext context, CancellationToken cancellationToken = default)
+    public async Task<Empty> UnregisterAccountAsync(V0ApiSessionData session, CancellationToken cancellationToken = default)
     {
-        var headers = ContextConvertToMetadata(context);
+        var headers = CreateMetadata(session);
         var response = await _v0Api.DeleteAccountAsync(new Empty(), headers, cancellationToken: cancellationToken);
         return response;
     }
