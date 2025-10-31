@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
@@ -46,14 +47,18 @@ public partial class GrpcClientFeeder : IDisposable
     /// <returns><seealso cref="Metadata"/></returns>
     private static Metadata CreateMetadata(V0ApiSessionData data)
     {
+        var createdAtStr = JsonSerializer.Serialize(data.CreatedAt);
+        var expiresAtStr = JsonSerializer.Serialize(data.ExpiresAt);
+        var updatedAtStr = JsonSerializer.Serialize(data.UpdatedAt);
+
         var metadata = new Metadata
         {
             { "Authorization", $"Bearer {data.Token}" },
             { "x-session-id", data.SessionId },
             { "x-account-id", data.AccountId },
-            { "x-created-at", data.CreatedAt.ToString() },
-            { "x-expires-at", data.ExpiresAt.ToString() },
-            { "x-updated-at", data.UpdatedAt.ToString() }
+            { "x-created-at", createdAtStr },
+            { "x-expires-at", expiresAtStr },
+            { "x-updated-at", updatedAtStr }
         };
 
         return metadata;
