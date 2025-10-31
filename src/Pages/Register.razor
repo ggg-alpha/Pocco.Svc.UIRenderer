@@ -26,7 +26,7 @@
                 @bind-value="password" required>
         </div>
 
-        <button type="submit" class="register-btn">
+        <button type="submit" class="register-btn" @onclick="async () => await HandleRegister()">
             <span class="btn-text">登録</span>
             <span class="btn-spinner"></span>
         </button>

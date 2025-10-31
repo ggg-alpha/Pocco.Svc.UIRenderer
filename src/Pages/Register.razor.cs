@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
+using Pocco.Client.Web.Services;
 
 namespace Pocco.Client.Web.Pages;
 
 partial class Register : ComponentBase
 {
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
+    [Inject] private ILogger<Register> Logger { get; set; } = null!;
+    [Inject] private GrpcClientFeederProvider ClientFeederProvider { get; set; } = null!;
+    private GrpcClientFeeder? _clientFeeder;
 
     private string email = string.Empty;
     private string emailError = string.Empty;
@@ -16,6 +21,18 @@ partial class Register : ComponentBase
     private bool isLoading = false;
     private bool hasEmailError = false;
     private bool hasPasswordError = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var scopedServiceId = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "scopedServiceId");
+            var id = Guid.TryParse(scopedServiceId, out var guid) ? guid : Guid.NewGuid();
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "scopedServiceId", id.ToString());
+
+            _clientFeeder = ClientFeederProvider.GetOrCreate(id, () => new GrpcClientFeeder(id, Logger));
+        }
+    }
 
     private async Task OnEmailInputChange(ChangeEventArgs e)
     {
@@ -43,11 +60,23 @@ partial class Register : ComponentBase
 
     private async Task HandleRegister()
     {
-        // isLoading = true;
-        // Simulate registration logic
-        await Task.Delay(1000);
-        // isLoading = false;
-        // Redirect or show success message
+        if (_clientFeeder == null)
+        {
+            Logger.LogError("GrpcClientFeeder is not initialized.");
+            return;
+        }
+
+        try
+        {
+            await _clientFeeder.RegisterAccountAsync(email, password);
+
+            NavigationManager.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Registration failed: {ex.Message}");
+            return;
+        }
     }
 
     private void GoToLoginPage()
