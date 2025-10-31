@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -62,7 +63,8 @@ partial class Login : ComponentBase
             var response = await AuthClient.AuthenticateAsync(email, password);
 
             // Store session data to local storage
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "sessionData", response.ToString());
+            var responseStr = JsonSerializer.Serialize(response);
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "sessionData", responseStr);
 
             NavigationManager.NavigateTo("/apps");
         }
