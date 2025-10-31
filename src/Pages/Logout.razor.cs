@@ -46,7 +46,7 @@ public partial class Logout
 
             // Clear session data from local storage
             await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "sessionData");
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo("/logout-success");
         }
         catch (Exception ex)
         {
