@@ -1,26 +1,25 @@
+using System.Text.Json;
+using Grpc.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Pocco.Client.Web.Clients;
 using Pocco.Client.Web.Services;
+using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Pages;
 
-partial class Register : ComponentBase
+partial class Unregister : ComponentBase
 {
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
     [Inject] private ILogger<Register> Logger { get; set; } = null!;
     [Inject] private GrpcClientFeederProvider ClientFeederProvider { get; set; } = null!;
+    [Inject] private AuthClient AuthClient { get; set; } = null!;
     private GrpcClientFeeder? _clientFeeder;
 
     private string email = string.Empty;
-    private string emailError = string.Empty;
 
     private string password = string.Empty;
-    private string passwordError = string.Empty;
-
-    private bool isLoading = false;
-    private bool hasEmailError = false;
-    private bool hasPasswordError = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -31,34 +30,12 @@ partial class Register : ComponentBase
             await JSRuntime.InvokeVoidAsync("localStorage.setItem", "scopedServiceId", id.ToString());
 
             _clientFeeder = ClientFeederProvider.GetOrCreate(id, () => new GrpcClientFeeder(id, Logger));
+
+            await HandleUnregister();
         }
     }
 
-    private async Task OnEmailInputChange(ChangeEventArgs e)
-    {
-        var value = e.Value?.ToString() ?? string.Empty;
-
-        var isValid = string.IsNullOrWhiteSpace(value);
-        isValid = !(value.Contains('@') && value.Contains('.'));
-
-        emailError = isValid ? "Email is required." : string.Empty;
-        hasEmailError = isValid;
-
-        await Task.CompletedTask;
-    }
-    private async Task OnPasswordInputChange(ChangeEventArgs e)
-    {
-        var value = e.Value?.ToString() ?? string.Empty;
-
-        var empty = string.IsNullOrWhiteSpace(value);
-        passwordError = empty ? "Email is required." : string.Empty;
-        hasPasswordError = empty;
-
-        await Task.CompletedTask;
-    }
-
-
-    private async Task HandleRegister()
+    private async Task HandleUnregister()
     {
         if (_clientFeeder == null)
         {
@@ -68,7 +45,22 @@ partial class Register : ComponentBase
 
         try
         {
-            await _clientFeeder.RegisterAccountAsync(email, password);
+            // Get session data from local storage
+            var sessionDataString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "sessionData"); // row string
+            if (string.IsNullOrWhiteSpace(sessionDataString))
+            {
+                NavigationManager.NavigateTo("/login");
+                return;
+            }
+            // Convert session data string to V0ApiSessionData
+            var sessionData = JsonSerializer.Deserialize<V0ApiSessionData>(sessionDataString);
+            if (sessionData == null)
+            {
+                NavigationManager.NavigateTo("/apps");
+                return;
+            }
+
+            await _clientFeeder.UnregisterAccountAsync(sessionData);
 
             NavigationManager.NavigateTo("/login");
         }
@@ -77,10 +69,5 @@ partial class Register : ComponentBase
             Logger.LogError($"Registration failed: {ex.Message}");
             return;
         }
-    }
-
-    private void GoToLoginPage()
-    {
-        NavigationManager.NavigateTo("/login");
     }
 }
