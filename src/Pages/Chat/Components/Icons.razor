@@ -1,0 +1,10 @@
+<div class="pocco_icons" style="cursor: @Cursor;">
+    @if (Mode is IconMode.BootstrapIcons)
+    {
+        <i class="bi bi-@IconSource" style="color: @Color"></i>
+    }
+    else if (Mode is IconMode.Images)
+    {
+        <img src="@IconSource" />
+    }
+</div>
