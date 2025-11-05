@@ -4,7 +4,7 @@ namespace Pocco.Client.Web.Pages.Chat.Components;
 
 public partial class Header : ComponentBase
 {
-    [Parameter] public RenderFragment? ChildComponent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     // Parent -> This component
     // Parent HeaderCmp.EventNameCall -> This EventNameCall
