@@ -10,6 +10,7 @@ namespace Pocco.Client.Web.Services;
 public partial class GrpcClientFeeder : IDisposable
 {
     public readonly Guid Id;
+    public int ConnectionCount { get; private set; } = 0;
 
     private readonly ILogger<ComponentBase> _logger;
     // private readonly Task _exampleLoopableTask;
@@ -30,6 +31,9 @@ public partial class GrpcClientFeeder : IDisposable
 
         _logger.LogInformation("GrpcClientFeeder {Id} created", Id);
     }
+
+    public void IncrementConnectionCount() => ConnectionCount++;
+    public void DecrementConnectionCount() => ConnectionCount--;
 
     public void Dispose()
     {

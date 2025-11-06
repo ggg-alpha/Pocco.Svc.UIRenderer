@@ -36,4 +36,47 @@ public class GrpcClientFeederProvider
             existing.Dispose();
         }
     }
+
+    /// <summary>
+    /// クライアントへの接続数をインクリメントする
+    /// </summary>
+    /// <remarks>
+    /// 必ず、 OnInitializedAsync 内で呼び出すこと
+    /// </remarks>
+    /// <param name="deviceId"></param>
+    public void InclementConnectionCount(Guid deviceId)
+    {
+        if (GrpcClientFeeders.FirstOrDefault(f => f.Id == deviceId) is GrpcClientFeeder client)
+        {
+            client.IncrementConnectionCount();
+
+            _logger.LogInformation("GrpcClientFeeder {Id} incremented connection count -> {Count}", deviceId, client.ConnectionCount);
+        }
+    }
+
+    /// <summary>
+    /// クライアントへの接続数をデクリメントし、0以下になった場合はクライアントを削除する
+    /// </summary>
+    /// <remarks>
+    /// 必ず、ページがDisposeされる際に呼び出すこと
+    /// </remarks>
+    /// <param name="deviceId"></param>
+    public void DecrementConnectionCount(Guid deviceId)
+    {
+        if (GrpcClientFeeders.FirstOrDefault(f => f.Id == deviceId) is GrpcClientFeeder client)
+        {
+            client.DecrementConnectionCount();
+
+            _logger.LogInformation("GrpcClientFeeder {Id} decremented connection count -> {Count}", deviceId, client.ConnectionCount);
+        }
+
+        var target = GrpcClientFeeders.FirstOrDefault(f => f.Id == deviceId);
+        if (target is not null && target.ConnectionCount <= 0)
+        {
+            GrpcClientFeeders.Remove(target);
+            target.Dispose();
+
+            _logger.LogInformation("GrpcClientFeeder {Id} removed due to zero connections", deviceId);
+        }
+    }
 }
