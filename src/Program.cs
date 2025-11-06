@@ -27,7 +27,6 @@ builder.Services.AddSingleton(sp =>
 });
 builder.Services.AddScoped<AuthClient>();
 builder.Services.AddSingleton<GrpcClientFeederProvider>();
-builder.Services.AddScoped<CircuitHandler, CircuitClosureDetector>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
