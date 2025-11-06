@@ -3,6 +3,7 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
+using Pocco.Client.Web.Models;
 using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Services;
@@ -12,15 +13,18 @@ public partial class GrpcClientFeeder : IDisposable
     public readonly Guid Id;
     public int ConnectionCount { get; private set; } = 0;
 
+    private readonly ProtectedLocalStorageProvider _storage;
     private readonly ILogger<ComponentBase> _logger;
-    // private readonly Task _exampleLoopableTask;
     private readonly CancellationTokenSource _cancellationTokenSource;
-
     private readonly V0ApiService.V0ApiServiceClient _v0Api;
+    private SessionData? _currentSessionData = null;
 
-    public GrpcClientFeeder(Guid id, [FromServices] ILogger<ComponentBase> logger)
+    private Task _sessionRefresher;
+
+    public GrpcClientFeeder(Guid id, ProtectedLocalStorageProvider localStorageProvider, [FromServices] ILogger<ComponentBase> logger)
     {
         Id = id;
+        _storage = localStorageProvider;
         _logger = logger;
         _cancellationTokenSource = new CancellationTokenSource();
         // _exampleLoopableTask = Task.Run(() => ExampleLoopableTask(cts.Token), cts.Token);
@@ -28,6 +32,10 @@ public partial class GrpcClientFeeder : IDisposable
         var apiConnectionString = Environment.GetEnvironmentVariable("API_CONNECTION_URL") ?? "https://localhost:7073";
         var channel = GrpcChannel.ForAddress(apiConnectionString);
         _v0Api = new V0ApiService.V0ApiServiceClient(channel);
+
+        _currentSessionData = _storage.GetSessionDataAsync().GetAwaiter().GetResult();
+
+        _sessionRefresher = Task.Run(() => RefreshSessionTask(_cancellationTokenSource.Token), _cancellationTokenSource.Token);
 
         _logger.LogInformation("GrpcClientFeeder {Id} created", Id);
     }
@@ -39,6 +47,9 @@ public partial class GrpcClientFeeder : IDisposable
     {
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
+
+        _sessionRefresher.Wait();
+
         _logger.LogInformation("GrpcClientFeeder {Id} disposed", Id);
 
         GC.SuppressFinalize(this);
