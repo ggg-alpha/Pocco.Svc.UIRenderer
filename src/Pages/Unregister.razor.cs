@@ -13,6 +13,7 @@ partial class Unregister : ComponentBase
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
     [Inject] private ILogger<Register> Logger { get; set; } = null!;
     [Inject] private GrpcClientFeederProvider ClientFeederProvider { get; set; } = null!;
+    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     private GrpcClientFeeder? _clientFeeder;
 
     private string email = string.Empty;
@@ -27,7 +28,7 @@ partial class Unregister : ComponentBase
             var id = Guid.TryParse(scopedServiceId, out var guid) ? guid : Guid.NewGuid();
             await JSRuntime.InvokeVoidAsync("localStorage.setItem", "scopedServiceId", id.ToString());
 
-            _clientFeeder = ClientFeederProvider.GetOrCreate(id, () => new GrpcClientFeeder(id, Logger));
+            _clientFeeder = ClientFeederProvider.GetOrCreate(id, () => new GrpcClientFeeder(id, LocalStorageProvider, Logger));
 
             await HandleUnregister();
         }

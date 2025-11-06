@@ -12,6 +12,7 @@ public partial class ClientHolder : ComponentBase, IDisposable
     [Inject] protected ILogger<ClientHolder> Logger { get; set; } = null!;
 
     [Inject] private GrpcClientFeederProvider ServiceProvider { get; set; } = null!;
+    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
     private int beforeClientCount = 0;
     private Task _updateSupresserTask = null!;
@@ -32,7 +33,7 @@ public partial class ClientHolder : ComponentBase, IDisposable
             var id = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "scopedServiceId");
             if (!string.IsNullOrEmpty(id) && Guid.TryParse(id, out var guid))
             {
-                Service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, Logger));
+                Service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, LocalStorageProvider, Logger));
                 if (Service is not null)
                 {
                     Logger.LogInformation($"Retrieved existing scoped service ID from session storage: {Service.Id}");
@@ -43,7 +44,7 @@ public partial class ClientHolder : ComponentBase, IDisposable
             else
             {
                 var newId = Guid.NewGuid();
-                Service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, Logger));
+                Service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, LocalStorageProvider, Logger));
                 Service.IncrementConnectionCount();
             }
 

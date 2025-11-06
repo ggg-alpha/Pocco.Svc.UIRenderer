@@ -2,6 +2,7 @@ using System.Text.Json;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Pocco.Client.Web.Services;
 using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Pages;
@@ -11,6 +12,7 @@ public partial class Logout
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private ILogger<Login> Logger { get; set; } = null!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
+    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -21,7 +23,7 @@ public partial class Logout
     private async Task HandleLogout()
     {
         // Get session data from local storage
-        var sessionDataString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "sessionData"); // row string
+        var sessionDataString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "sessionData"); // TODO: Replace to ProtectedLocalStorage
         if (string.IsNullOrWhiteSpace(sessionDataString))
         {
             NavigationManager.NavigateTo("/login");
@@ -43,7 +45,7 @@ public partial class Logout
             // var response = await AuthClient.UnauthenticateAsync(sessionData);
 
             // Clear session data from local storage
-            await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "sessionData");
+            await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "sessionData"); // TODO: Replace to ProtectedLocalStorage
             NavigationManager.NavigateTo("/logout-success");
         }
         catch (Exception ex)
