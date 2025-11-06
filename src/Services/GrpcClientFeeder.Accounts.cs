@@ -6,8 +6,6 @@ namespace Pocco.Client.Web.Services;
 
 public partial class GrpcClientFeeder
 {
-    public V0ApiService.V0ApiServiceClient V0Api => _v0Api;
-
     /// <summary>
     /// アカウントを登録するためのラッパーメソッド
     /// </summary>
