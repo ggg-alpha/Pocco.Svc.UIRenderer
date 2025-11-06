@@ -2,7 +2,6 @@ using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.DataProtection;
 using Pocco.Client.Web;
-using Pocco.Client.Web.Clients;
 using Pocco.Client.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +28,8 @@ builder.Services.AddSingleton(sp =>
     });
     return grpcChannel;
 });
-builder.Services.AddScoped<AuthClient>();
+
+// API Clients
 builder.Services.AddSingleton<GrpcClientFeederProvider>();
 
 builder.Services.AddRazorComponents()
