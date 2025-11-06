@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Grpc.Core;
 using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Models;
@@ -66,5 +67,24 @@ public class SessionData
             ExpiresAt = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(this.ExpiresAt.ToUniversalTime()),
             UpdatedAt = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(this.UpdatedAt.ToUniversalTime())
         };
+    }
+
+    public static Metadata ToMetadata(SessionData data)
+    {
+        var createdAtStr = JsonSerializer.Serialize(data.CreatedAt);
+        var expiresAtStr = JsonSerializer.Serialize(data.ExpiresAt);
+        var updatedAtStr = JsonSerializer.Serialize(data.UpdatedAt);
+
+        var metadata = new Metadata
+        {
+            { "Authorization", $"Bearer {data.Token}" },
+            { "x-session-id", data.SessionId },
+            { "x-account-id", data.AccountId },
+            { "x-created-at", createdAtStr },
+            { "x-expires-at", expiresAtStr },
+            { "x-updated-at", updatedAtStr }
+        };
+
+        return metadata;
     }
 }
