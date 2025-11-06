@@ -35,6 +35,8 @@ public partial class GrpcClientFeeder
 
     private async Task RefreshSessionTask(CancellationToken cancellationToken = default)
     {
+        _currentSessionData = await _storage.GetSessionDataAsync();
+
         while (!cancellationToken.IsCancellationRequested)
         {
             if (_currentSessionData is null || _currentSessionData.ShouldRefresh() is false)

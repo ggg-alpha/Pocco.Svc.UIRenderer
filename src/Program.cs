@@ -7,10 +7,8 @@ using Pocco.Client.Web.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<ProtectedLocalStorage>();
+builder.Services.AddScoped<ProtectedLocalStorage>();
 builder.Services.AddDataProtection();
-
-// Auth pieces
 builder.Services.AddScoped<ProtectedLocalStorageProvider>();
 
 builder.Services.AddSingleton(sp =>

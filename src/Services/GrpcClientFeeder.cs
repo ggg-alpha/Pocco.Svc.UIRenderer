@@ -21,19 +21,19 @@ public partial class GrpcClientFeeder : IDisposable
 
     private Task _sessionRefresher;
 
-    public GrpcClientFeeder(Guid id, ProtectedLocalStorageProvider localStorageProvider, [FromServices] ILogger<ComponentBase> logger)
+    public GrpcClientFeeder(Guid id, [FromServices] ProtectedLocalStorageProvider localStorageProvider, [FromServices] ILogger<ComponentBase> logger)
     {
+        _logger = logger;
+
+
         Id = id;
         _storage = localStorageProvider;
-        _logger = logger;
         _cancellationTokenSource = new CancellationTokenSource();
         // _exampleLoopableTask = Task.Run(() => ExampleLoopableTask(cts.Token), cts.Token);
 
         var apiConnectionString = Environment.GetEnvironmentVariable("API_CONNECTION_URL") ?? "https://localhost:7073";
         var channel = GrpcChannel.ForAddress(apiConnectionString);
         _v0Api = new V0ApiService.V0ApiServiceClient(channel);
-
-        _currentSessionData = _storage.GetSessionDataAsync().GetAwaiter().GetResult();
 
         _sessionRefresher = Task.Run(() => RefreshSessionTask(_cancellationTokenSource.Token), _cancellationTokenSource.Token);
 

@@ -16,9 +16,12 @@ public class GrpcClientFeederProvider
 
     public GrpcClientFeeder GetOrCreate(Guid id, Func<GrpcClientFeeder> createNew)
     {
+        _logger.LogInformation("Getting or creating GrpcClientFeeder with ID: {Id}", id);
+
         var existing = GrpcClientFeeders.FirstOrDefault(f => f.Id == id);
         if (existing != null)
         {
+            _logger.LogInformation("Found existing GrpcClientFeeder with ID: {Id}", id);
             return existing;
         }
 

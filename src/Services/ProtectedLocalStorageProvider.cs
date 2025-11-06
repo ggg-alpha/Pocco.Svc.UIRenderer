@@ -41,4 +41,31 @@ public class ProtectedLocalStorageProvider(
         await _storage.DeleteAsync(Key);
         _logger.LogInformation("SessionData cleared from ProtectedLocalStorage.");
     }
+
+    public async Task SetDeviceIdAsync(Guid deviceId)
+    {
+        await _storage.SetAsync("deviceId", deviceId);
+        _logger.LogInformation("DeviceId saved to ProtectedLocalStorage: {DeviceId}", deviceId);
+    }
+
+    public async Task<Guid?> GetDeviceIdAsync()
+    {
+        var result = await _storage.GetAsync<Guid>("deviceId");
+        if (result.Success)
+        {
+            _logger.LogInformation("DeviceId retrieved from ProtectedLocalStorage: {DeviceId}", result.Value);
+            return result.Value;
+        }
+        else
+        {
+            _logger.LogWarning("No DeviceId found in ProtectedLocalStorage.");
+            return null;
+        }
+    }
+
+    public async Task ClearDeviceIdAsync()
+    {
+        await _storage.DeleteAsync("deviceId");
+        _logger.LogInformation("DeviceId cleared from ProtectedLocalStorage.");
+    }
 }

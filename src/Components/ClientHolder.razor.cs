@@ -27,11 +27,13 @@ public partial class ClientHolder : ComponentBase, IDisposable
     {
         if (firstRender)
         {
+            Logger.LogInformation("ClientHolder initialized");
+
             _updateSupresserTask = UpdateSupresser();
 
             // Get id from session storage (if exists)
-            var id = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "scopedServiceId");
-            if (!string.IsNullOrEmpty(id) && Guid.TryParse(id, out var guid))
+            var id = await LocalStorageProvider.GetDeviceIdAsync().ConfigureAwait(false);
+            if (id is Guid guid)
             {
                 Service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, LocalStorageProvider, Logger));
                 if (Service is not null)
@@ -43,12 +45,18 @@ public partial class ClientHolder : ComponentBase, IDisposable
             }
             else
             {
+                Logger.LogInformation("No existing scoped service ID found in session storage. Creating new one.");
+
                 var newId = Guid.NewGuid();
                 Service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, LocalStorageProvider, Logger));
                 Service.IncrementConnectionCount();
+
+                await LocalStorageProvider.SetDeviceIdAsync(newId);
+
+                Logger.LogInformation($"Created new scoped service ID: {Service.Id}");
             }
 
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
     }
 
