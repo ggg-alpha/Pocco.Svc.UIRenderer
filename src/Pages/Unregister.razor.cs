@@ -2,7 +2,6 @@ using System.Text.Json;
 using Grpc.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Pocco.Client.Web.Clients;
 using Pocco.Client.Web.Services;
 using Pocco.Libs.Protobufs.Services;
 
@@ -14,7 +13,6 @@ partial class Unregister : ComponentBase
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
     [Inject] private ILogger<Register> Logger { get; set; } = null!;
     [Inject] private GrpcClientFeederProvider ClientFeederProvider { get; set; } = null!;
-    [Inject] private AuthClient AuthClient { get; set; } = null!;
     private GrpcClientFeeder? _clientFeeder;
 
     private string email = string.Empty;
