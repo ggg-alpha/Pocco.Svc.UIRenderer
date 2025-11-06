@@ -5,7 +5,6 @@ namespace Pocco.Client.Web.Pages.Chat.Components;
 public partial class Icons : ComponentBase
 {
     public enum IconMode
-
     {
         BootstrapIcons,
         Images
@@ -23,6 +22,9 @@ public partial class Icons : ComponentBase
     /// アイコンの色 (Bootstrap Icons 専用)
     /// </summary>
     [Parameter] public string? Color { get; set; }
+
+    [Parameter] public string? Height { get; set; } = "auto";
+    [Parameter] public string? Width { get; set; } = "auto";
 
     // TODO: クリック時のイベントハンドラの追加
     // [Parameter] public EventCallback OnClick { get; set; }

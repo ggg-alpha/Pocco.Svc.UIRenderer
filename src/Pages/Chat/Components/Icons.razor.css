@@ -2,8 +2,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: auto;
-    height: 100%;
+    /* width: auto;
+    height: 100%; */
     fill: currentColor;
     overflow: hidden;
 
