@@ -3,6 +3,15 @@
 @using Pocco.Client.Web.Pages.Chat.Components
 @using Pocco.Client.Web.Pages.Chat.Layouts
 
+@*
+    TODO: イベントの実装
+    TODO: 1. APIをこのページに統合
+    TODO: 2. APIイベントの購読をこのページに統合
+    TODO: 3. 組織の取得、選択、切り替えの実装
+    TODO: 4. チャット選択、チャット表示の実装
+    TODO: 5. メンバーリストの実装
+ *@
+
 <Header>
     <Promotion IsBordered=false />
 
@@ -34,11 +43,19 @@
     </Sidebar>
     <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
         Width="240px">
-        @* org selector, org component, chat list *@
         <OrganizationSelector />
+        <div
+            class="w-100 px-1 pt-1 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
+            <Chats Type="Chats.ChatType.Message" Name="Generallllllllllllllllllllllllllllll" />
+        </div>
     </Sidebar>
 
     @* Chat area *@
+    <div class="d-flex flex-column flex-grow-1"></div>
 
     @* Member list -> Sidebar *@
+    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Hidden"
+        Width="240px">
+        @* Member list *@
+    </Sidebar>
 </MainContentFrame>
