@@ -1,0 +1,9 @@
+.pocco_org_selector__bs_btn {
+    border-radius: 0;
+
+    &:focus {
+        border-color: transparent;
+        outline: none;
+        box-shadow: none;
+    }
+}
