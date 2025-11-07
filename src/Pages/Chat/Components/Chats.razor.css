@@ -1,0 +1,38 @@
+.pocco_chats__bs_btn {
+    background-color: none;
+    box-shadow: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: var(--bs-primary);
+        box-shadow: none;
+    }
+}
+
+.pocco_chat_row {
+    .pocco_chat_row__info {
+        .pocco_chat_row__info_config {
+            display: none;
+            /* position: absolute;
+            top: 4px;
+            right: 4px; */
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #00000000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+    }
+}
+
+.pocco_chat_row:hover {
+    .pocco_chat_row__info>.pocco_chat_row__info_config {
+        display: flex;
+    }
+}
