@@ -6,8 +6,14 @@ public partial class Page : ComponentBase
 {
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("Chat Page Initialized");
-
         await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("Chat Page Rendered");
+        }
     }
 }
