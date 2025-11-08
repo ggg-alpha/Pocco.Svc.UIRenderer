@@ -1,14 +1,15 @@
 using Grpc.Net.Client;
-using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.DataProtection;
 using Pocco.Client.Web;
-using Pocco.Client.Web.Clients;
 using Pocco.Client.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<ProtectedLocalStorage>();
 builder.Services.AddDataProtection();
+builder.Services.AddScoped<ProtectedLocalStorageProvider>();
 
 builder.Services.AddSingleton(sp =>
 {
@@ -25,9 +26,9 @@ builder.Services.AddSingleton(sp =>
     });
     return grpcChannel;
 });
-builder.Services.AddScoped<AuthClient>();
+
+// API Clients
 builder.Services.AddSingleton<GrpcClientFeederProvider>();
-builder.Services.AddScoped<CircuitHandler, CircuitClosureDetector>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
 
@@ -11,13 +10,11 @@ public partial class ClientHolder : ComponentBase, IDisposable
     public GrpcClientFeeder? Service;
 
     [Inject] protected ILogger<ClientHolder> Logger { get; set; } = null!;
-    [Inject] protected CircuitHandler CircuitHandler { get; set; } = null!;
 
     [Inject] private GrpcClientFeederProvider ServiceProvider { get; set; } = null!;
+    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-    private int connectedClientCount = 0;
     private int beforeClientCount = 0;
-    private bool isDisposed = false;
     private Task _updateSupresserTask = null!;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
@@ -28,90 +25,38 @@ public partial class ClientHolder : ComponentBase, IDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Resolve connectedClients count
-        var connectedClients = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "connectedClients");
-        if (connectedClients == null)
-        {
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "connectedClients", "0");
-        }
-
-        _ = int.TryParse(connectedClients, out connectedClientCount);
-
         if (firstRender)
         {
+            Logger.LogInformation("ClientHolder initialized");
+
             _updateSupresserTask = UpdateSupresser();
 
             // Get id from session storage (if exists)
-            var id = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "scopedServiceId");
-            if (!string.IsNullOrEmpty(id) && Guid.TryParse(id, out var guid))
+            var id = await LocalStorageProvider.GetDeviceIdAsync().ConfigureAwait(false);
+            if (id is Guid guid)
             {
-                Service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, Logger));
+                Service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, LocalStorageProvider, Logger));
                 if (Service is not null)
                 {
                     Logger.LogInformation($"Retrieved existing scoped service ID from session storage: {Service.Id}");
 
-                    if (CircuitHandler is CircuitClosureDetector handler)
-                    {
-                        Logger.LogInformation($"Adding circuit disconnected handler for scoped service ID: {Service.Id}");
-
-                        handler.Disconnected += async (circuit) => // TODO: ページを切り替えるごとにイベントが追加されてしまう問題を解決する
-                        {
-                            isDisposed = true;
-
-                            Logger.LogInformation($"Circuit disconnected event triggered for scoped service ID: {Service.Id} (connected clients: {connectedClientCount})");
-
-                            if (Service is not null && connectedClientCount == 0)
-                            {
-                                Logger.LogInformation($"Circuit disconnected. Removing scoped service ID: {Service.Id}");
-                                ServiceProvider.Remove(Service.Id);
-                                Service = null;
-                            }
-                        };
-                    }
-
-                    // increase client connected amount on localStorage
-                    connectedClients = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "connectedClients");
-                    if (int.TryParse(connectedClients, out var count))
-                    {
-                        count++;
-                        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "connectedClients", count.ToString());
-                    }
+                    Service.IncrementConnectionCount();
                 }
             }
             else
             {
+                Logger.LogInformation("No existing scoped service ID found in session storage. Creating new one.");
+
                 var newId = Guid.NewGuid();
-                Service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, Logger));
+                Service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, LocalStorageProvider, Logger));
+                Service.IncrementConnectionCount();
 
-                // Store id in session storage
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "scopedServiceId", newId.ToString());
+                await LocalStorageProvider.SetDeviceIdAsync(newId);
 
-                // Add circuit association
-                if (CircuitHandler is CircuitClosureDetector handler)
-                {
-                    handler.Disconnected += async (circuit) => // TODO: ページを切り替えるごとにイベントが追加されてしまう問題を解決する
-                    {
-                        isDisposed = true;
-
-                        if (Service is not null && connectedClientCount == 0)
-                        {
-                            Logger.LogInformation($"Circuit disconnected. Removing scoped service ID: {Service.Id}");
-                            ServiceProvider.Remove(Service.Id);
-                            Service = null;
-                        }
-                    };
-                }
-
-                // increase client connected amount on localStorage
-                connectedClients = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "connectedClients");
-                if (int.TryParse(connectedClients, out var count))
-                {
-                    count++;
-                    await JSRuntime.InvokeVoidAsync("localStorage.setItem", "connectedClients", count.ToString());
-                }
+                Logger.LogInformation($"Created new scoped service ID: {Service.Id}");
             }
 
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -119,34 +64,28 @@ public partial class ClientHolder : ComponentBase, IDisposable
     {
         do
         {
-            // Resolve connectedClients count
-            var connectedClients = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "connectedClients");
-            if (connectedClients == null)
-            {
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "connectedClients", "0");
-            }
-
-            _ = int.TryParse(connectedClients, out connectedClientCount);
-
             // Update state if connectedClientCount changed
-            if (beforeClientCount != connectedClientCount)
+            if (beforeClientCount != Service?.ConnectionCount)
             {
-                Logger.LogInformation($"Connected clients changed from {beforeClientCount} to {connectedClientCount}");
+                Logger.LogInformation($"Connected clients changed from {beforeClientCount} to {Service?.ConnectionCount}");
 
                 StateHasChanged();
             }
 
-            beforeClientCount = connectedClientCount;
+            beforeClientCount = Service?.ConnectionCount ?? 0;
 
             await Task.Delay(1000, _cancellationTokenSource.Token);
-        } while (!isDisposed);
+        } while (!_cancellationTokenSource.IsCancellationRequested);
     }
 
     public void Dispose()
     {
-        isDisposed = true;
+        Service?.DecrementConnectionCount();
+
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
+
+        Logger.LogInformation("ClientHolder disposed");
 
         GC.SuppressFinalize(this);
     }

@@ -1,8 +1,6 @@
 using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Pocco.Client.Web.Clients;
 
 namespace Pocco.Client.Web.Pages;
 
@@ -11,7 +9,6 @@ partial class Login : ComponentBase
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private ILogger<Login> Logger { get; set; } = null!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-    [Inject] private AuthClient AuthClient { get; set; } = null!;
 
     private string email = string.Empty;
     private string emailError = string.Empty;
@@ -60,11 +57,11 @@ partial class Login : ComponentBase
 
         try
         {
-            var response = await AuthClient.AuthenticateAsync(email, password);
+            // var response = await AuthClient.AuthenticateAsync(email, password);
 
             // Store session data to local storage
-            var responseStr = JsonSerializer.Serialize(response);
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "sessionData", responseStr);
+            // var responseStr = JsonSerializer.Serialize(response);
+            // await JSRuntime.InvokeVoidAsync("localStorage.setItem", "sessionData", responseStr);
 
             NavigationManager.NavigateTo("/apps");
         }

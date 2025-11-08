@@ -5,7 +5,7 @@
 
     @if (Service != null)
     {
-        <div>Service ID: <span>@Service.Id</span> | Active: <span>@connectedClientCount</span></div>
+        <div>Service ID: <span>@Service.Id</span> | Active: <span>@Service?.ConnectionCount</span></div>
     }
     else
     {
