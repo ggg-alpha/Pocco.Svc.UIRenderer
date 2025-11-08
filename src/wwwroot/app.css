@@ -71,3 +71,8 @@ h1:focus {
 .form-floating>.form-control:focus::placeholder {
     text-align: start;
 }
+
+img {
+    user-select: none;
+    pointer-events: none;
+}
