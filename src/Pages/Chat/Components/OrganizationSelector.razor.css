@@ -1,9 +1,17 @@
 .pocco_org_selector__bs_btn {
     border-radius: 0;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    color: black;
 
+    &:hover,
     &:focus {
         border-color: transparent;
         outline: none;
         box-shadow: none;
+
+        background-color: #00000030;
     }
 }

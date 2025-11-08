@@ -1,5 +1,5 @@
 .pocco_chats__bs_btn {
-    background-color: none;
+    background-color: transparent;
     box-shadow: none;
     justify-content: center;
     align-items: center;
@@ -8,7 +8,7 @@
     &:hover,
     &:focus,
     &:active {
-        background-color: var(--bs-primary);
+        background-color: #00000030;
         box-shadow: none;
     }
 }
