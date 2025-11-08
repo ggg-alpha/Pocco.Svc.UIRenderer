@@ -51,15 +51,27 @@
         </div>
     </Sidebar>
 
-    @* Chat area *@
     <div class="d-flex flex-column flex-grow-1 h-100">
         <ChatHeader ChatName="Sample Chat" Description="Sample chat description!" />
         <ChatArea Messages="_sampleMessages" />
     </div>
 
-    @* Member list -> Sidebar *@
     <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Hidden"
         Width="240px">
-        @* Member list *@
+        <div
+            class="w-100 px-2 pt-2 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
+            <Member Name="Member 1" CustomStatusMessage="やっほー" Status="Member.MemberStatus.Online" />
+            <Member Name="Member 2" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
+            <Member Name="Member 3" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
+            <Member Name="Member 4" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
+            <Member Name="Member 5" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
+            <Member Name="Member 6" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
+            <Member Name="Member 7" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
+            <Member Name="Member 8" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
+            <Member Name="Member 9" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
+            <Member Name="Member 10" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
+            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
+            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
+        </div>
     </Sidebar>
 </MainContentFrame>
