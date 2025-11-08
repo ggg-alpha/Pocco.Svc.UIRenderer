@@ -1,3 +1,32 @@
+.pocco_categories {
+    .accordion-button {
+        background-color: transparent;
+        color: #000000;
+        padding: 4px;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: #00000020;
+            font-weight: bold;
+            box-shadow: none;
+        }
+    }
+
+    .accordion-item,
+    .accordion-header,
+    .accordion-button:not(.collapsed) {
+        border-color: transparent;
+        box-shadow: none;
+    }
+
+    .accordion-collapse {
+        background-color: #00000005;
+        border-color: transparent;
+        box-shadow: none;
+    }
+}
+
 .pocco_chats__bs_btn {
     background-color: transparent;
     box-shadow: none;
