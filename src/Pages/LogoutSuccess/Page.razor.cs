@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Pocco.Client.Web.Pages;
+namespace Pocco.Client.Web.Pages.LogoutSuccess;
 
-partial class LogoutSuccess : ComponentBase
+partial class Page : ComponentBase
 {
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
 
