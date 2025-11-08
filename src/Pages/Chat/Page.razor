@@ -52,7 +52,10 @@
     </Sidebar>
 
     @* Chat area *@
-    <div class="d-flex flex-column flex-grow-1"></div>
+    <div class="d-flex flex-column flex-grow-1 h-100">
+        <ChatHeader ChatName="Sample Chat" Description="Sample chat description!" />
+        <ChatArea />
+    </div>
 
     @* Member list -> Sidebar *@
     <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Hidden"
