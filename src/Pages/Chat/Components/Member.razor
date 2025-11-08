@@ -1,0 +1,22 @@
+<div class="w-100 d-flex flex-row gap-2 px-2 py-1 pocco_member">
+    <div class="@GetStatusColor() pocco_member__icon_container position-relative">
+        <Icons Mode="Icons.IconMode.Images" IconSource="@IconUrl" Height="32px" Width="32px" />
+        <span class="status position-absolute translate-middle
+            @GetStatusColor() rounded-circle border" style="width: 12px; height: 12px;">
+        </span>
+    </div>
+
+    <div class="d-flex flex-column">
+        <span>@Name</span>
+        <span>
+            @if (CustomStatusMessage.Length <= 0)
+            {
+                @GetStatusText()
+            }
+            else
+            {
+                @CustomStatusMessage
+            }
+        </span>
+    </div>
+</div>
