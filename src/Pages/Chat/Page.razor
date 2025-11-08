@@ -1,0 +1,77 @@
+@page "/apps/v2/chat"
+@layout Chat.Layouts.MainFrame
+@using Pocco.Client.Web.Pages.Chat.Components
+@using Pocco.Client.Web.Pages.Chat.Layouts
+
+@*
+    TODO: イベントの実装
+    TODO: 1. APIをこのページに統合
+    TODO: 2. APIイベントの購読をこのページに統合
+    TODO: 3. 組織の取得、選択、切り替えの実装
+    TODO: 4. チャット選択、チャット表示の実装
+    TODO: 5. メンバーリストの実装
+ *@
+
+<Header>
+    <Promotion IsBordered=false />
+
+    <div class="d-flex gap-4">
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="inbox-fill" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="question-circle-fill" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="cloud-download-fill" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+    </div>
+</Header>
+
+<MainContentFrame>
+    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
+        Width="35px">
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="chat-dots-fill" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="calendar-fill" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="table" Cursor="pointer" Color="#16283a" Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="easel2-fill" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="camera-reels-fill" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="images" Cursor="pointer" Color="#16283a" Height="24px" />
+        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="journal-richtext" Cursor="pointer" Color="#16283a"
+            Height="24px" />
+    </Sidebar>
+    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
+        Width="240px">
+        <OrganizationSelector />
+        <div
+            class="w-100 px-1 pt-1 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
+            <Chats Type="Chats.ChatType.Message" Name="Generallllllllllllllllllllllllllllll" />
+            <Chats Type="Chats.ChatType.Category" Name="カテゴリー1" Id="category1" Children="_sampleChatsList.Children" />
+        </div>
+    </Sidebar>
+
+    <div class="d-flex flex-column flex-grow-1 h-100">
+        <ChatHeader ChatName="Sample Chat" Description="Sample chat description!" />
+        <ChatArea Messages="_sampleMessages" />
+    </div>
+
+    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Hidden"
+        Width="240px">
+        <div
+            class="w-100 px-2 pt-2 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
+            <Member Name="Member 1" CustomStatusMessage="やっほー" Status="Member.MemberStatus.Online" />
+            <Member Name="Member 2" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
+            <Member Name="Member 3" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
+            <Member Name="Member 4" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
+            <Member Name="Member 5" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
+            <Member Name="Member 6" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
+            <Member Name="Member 7" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
+            <Member Name="Member 8" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
+            <Member Name="Member 9" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
+            <Member Name="Member 10" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
+            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
+            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
+        </div>
+    </Sidebar>
+</MainContentFrame>
