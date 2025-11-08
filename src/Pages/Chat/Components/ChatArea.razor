@@ -1,8 +1,7 @@
-<div class="d-flex flex-grow-1 flex-column justify-content-end align-items-stretch overflow-y-scroll
+<div class="d-flex flex-grow-1 flex-column justify-content-start align-items-start overflow-y-scroll
             px-3 pb-3">
     @foreach (var message in Messages)
     {
-        @* <ChatMessage AvatarUrl="@message.AvatarUrl" UserName="@message.UserName" TimeStamp="@message.TimeStamp"
-            IsOwnMessage="@message.IsOwnMessage" MessageText="@message.MessageText" /> *@
+        <ChatMessage Message="message" />
     }
 </div>

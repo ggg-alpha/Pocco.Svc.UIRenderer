@@ -26,6 +26,30 @@ public partial class Page : ComponentBase
             }
         }
     };
+    private readonly List<ChatItem> _sampleMessages = new List<ChatItem>
+    {
+        new ChatItem
+        {
+            Id = "msg1",
+            AuthorId = "user1",
+            Content = "こんにちは！",
+            CreatedAt = DateTime.UtcNow.AddMinutes(-10)
+        },
+        new ChatItem
+        {
+            Id = "msg2",
+            AuthorId = "user2",
+            Content = "こんばんは！",
+            CreatedAt = DateTime.UtcNow.AddMinutes(-5)
+        },
+        new ChatItem
+        {
+            Id = "msg3",
+            AuthorId = "user1",
+            Content = "元気ですか？",
+            CreatedAt = DateTime.UtcNow.AddMinutes(-2)
+        }
+    };
 
     protected override async Task OnInitializedAsync()
     {
