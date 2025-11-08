@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
 
-namespace Pocco.Client.Web.Components;
+namespace Pocco.Client.Web.Pages._Shared.Components;
 
 public partial class ClientHolder : ComponentBase, IDisposable
 {
