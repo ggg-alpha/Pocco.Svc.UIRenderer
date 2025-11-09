@@ -2,12 +2,12 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace Pocco.Client.Web.Pages;
+namespace Pocco.Client.Web.Pages.Login;
 
-partial class Login : ComponentBase
+partial class Page : ComponentBase
 {
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] private ILogger<Login> Logger { get; set; } = null!;
+    [Inject] private ILogger<Page> Logger { get; set; } = null!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
 
     private string email = string.Empty;

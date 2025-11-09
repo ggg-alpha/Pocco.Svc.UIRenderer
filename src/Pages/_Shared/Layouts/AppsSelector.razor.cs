@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Pocco.Client.Web.Layouts;
+namespace Pocco.Client.Web.Pages._Shared.Layouts;
 
 partial class AppsSelector
 {
