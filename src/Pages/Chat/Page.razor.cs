@@ -3,6 +3,17 @@ using Pocco.Client.Web.Pages.Chat.Components;
 
 namespace Pocco.Client.Web.Pages.Chat;
 
+public class InPageEventModel
+{
+    public string EventType { get; set; } = string.Empty;
+}
+
+public static class InPageEventTypes
+{
+    public const string OpenModal = "OpenModal";
+    public const string CloseModal = "CloseModal";
+}
+
 public partial class Page : ComponentBase
 {
     private readonly CategoryModel _sampleChatsList = new CategoryModel
@@ -50,6 +61,9 @@ public partial class Page : ComponentBase
             CreatedAt = DateTime.UtcNow.AddMinutes(-2)
         }
     };
+    private bool _isModalShown = false;
+
+    public OrganizationSelector? OrgSelectorRef;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,5 +76,25 @@ public partial class Page : ComponentBase
         {
             Console.WriteLine("Chat Page Rendered");
         }
+    }
+
+    public async Task InvokeEventAsync(InPageEventModel e)
+    {
+        if (e.EventType == InPageEventTypes.OpenModal)
+        {
+            // モーダルを開く処理をここに実装
+            _isModalShown = true;
+            StateHasChanged();
+            Console.WriteLine("Open Modal Event Invoked");
+        }
+        else if (e.EventType == InPageEventTypes.CloseModal)
+        {
+            // モーダルを閉じる処理をここに実装
+            _isModalShown = false;
+            StateHasChanged();
+            Console.WriteLine("Close Modal Event Invoked");
+        }
+
+        await Task.CompletedTask;
     }
 }

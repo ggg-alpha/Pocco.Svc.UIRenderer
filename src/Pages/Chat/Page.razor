@@ -12,6 +12,8 @@
     TODO: 5. メンバーリストの実装
  *@
 
+<Modal IsShown=@_isModalShown ParentPage="this" />
+
 <Header>
     <Promotion IsBordered=false />
 
@@ -43,7 +45,7 @@
     </Sidebar>
     <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
         Width="240px">
-        <OrganizationSelector />
+        <OrganizationSelector ParentPage="this" />
         <div
             class="w-100 px-1 pt-1 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
             <Chats Type="Chats.ChatType.Message" Name="Generallllllllllllllllllllllllllllll" />
