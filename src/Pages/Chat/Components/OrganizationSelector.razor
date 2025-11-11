@@ -24,12 +24,8 @@
     </div>
     <div class="btn-group">
         <button class="pocco_org_selector__bs_btn btn btn-secondary dropdown-toggle border-start-0 rounded-end"
-            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            type="button" @onclick="() => OnOpenOrganizationSelectorClicked()">
             <span class="visually-hidden">組織の選択画面を開く</span>
         </button>
-        <ul class="dropdown-menu w-100 dropdown-menu-end"> @* TODO: カスタムコンポーネントに変更 *@
-            <li><a class="dropdown-item" href="#">Organization name</a></li> @* TODO: @onclick イベントを追加 *@
-            @* Organization list *@
-        </ul>
     </div>
 </div>
