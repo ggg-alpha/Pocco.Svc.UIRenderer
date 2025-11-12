@@ -1,6 +1,7 @@
 @page "/apps/v2/chat"
 @layout Chat.Layouts.MainFrame
 @using Pocco.Client.Web.Pages.Chat.Components
+@using Pocco.Client.Web.Pages.Chat.Components.Modals
 @using Pocco.Client.Web.Pages.Chat.Layouts
 
 @*
@@ -12,7 +13,7 @@
     TODO: 5. メンバーリストの実装
  *@
 
-<Modal IsShown=@_isModalShown ParentPage="this" />
+<OrgActionModal IsShown=@_isModalShown ParentPage="this" />
 
 <Header>
     <Promotion IsBordered=false />

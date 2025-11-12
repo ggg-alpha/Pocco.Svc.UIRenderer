@@ -8,9 +8,6 @@
 }
 
 .panel {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
 }
@@ -23,16 +20,16 @@
 
 /* --- enter / exit アニメーション --- */
 /* enter: 初期は端にいて center に来る */
-.enter-right {
+/* .enter-right {
     animation: enterFromRight 300ms ease forwards;
 }
 
 .enter-left {
     animation: enterFromLeft 300ms ease forwards;
-}
+} */
 
 /* exit: center から端へ出ていく */
-.exit-left {
+/* .exit-left {
     animation: exitToLeft 300ms ease forwards;
 }
 
@@ -86,4 +83,4 @@
         transform: translateX(100%);
         opacity: 0.9;
     }
-}
+} */

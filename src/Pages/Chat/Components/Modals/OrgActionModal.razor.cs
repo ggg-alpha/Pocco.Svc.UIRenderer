@@ -1,22 +1,15 @@
 using Microsoft.AspNetCore.Components;
 
-namespace Pocco.Client.Web.Pages.Chat.Components;
+namespace Pocco.Client.Web.Pages.Chat.Components.Modals;
 
-public static class ModalMode
-{
-    public const string QuickAccess = "QuickAccess";
-    public const string OrganizationSelector = "OrganizationSelector";
-}
-
-public partial class Modal : ComponentBase
+public partial class OrgActionModal : ComponentBase
 {
     [Parameter] public bool IsShown { get; set; } = false;
     [Parameter] public Page ParentPage { get; set; } = null!;
-    public string Mode { get; set; } = ModalMode.QuickAccess;
 
-    public enum View { Page1, Page2, Page3 }
+    public enum View { Top, Create, Search }
 
-    View current = View.Page1;
+    View current = View.Top;
 
     protected Type? currentType;
     protected Type? previousType;
@@ -40,15 +33,15 @@ public partial class Modal : ComponentBase
         if (next == current) return;
 
         // 保存して新しい fragment をセット
-        previousType = currentType;
-        previousParams = currentParams;
+        // previousType = currentType;
+        // previousParams = currentParams;
 
         // 進む／戻るの判定（enumの順序を利用）
-        bool forward = next > current;
+        // bool forward = next > current;
 
         // CSSクラスをセット（enter/exit）
-        prevCss = forward ? "exit-left" : "exit-right";
-        currCss = forward ? "enter-right" : "enter-left";
+        // prevCss = forward ? "exit-left" : "exit-right";
+        // currCss = forward ? "enter-right" : "enter-left";
 
         current = next;
         currentType = GetTypeFor(current);
@@ -70,9 +63,9 @@ public partial class Modal : ComponentBase
 
     private Type GetTypeFor(View v) => v switch
     {
-        View.Page1 => typeof(Chat.Components.Member),
-        View.Page2 => typeof(Chat.Components.Icons),
-        View.Page3 => typeof(Chat.Components.Header),
+        View.Top => typeof(Contents.OrgListModalContent),
+        View.Create => typeof(Chat.Components.Icons),
+        View.Search => typeof(Chat.Components.Header),
         _ => typeof(Chat.Components.Member)
     };
 
@@ -81,7 +74,7 @@ public partial class Modal : ComponentBase
         // 例：Page2 に Title パラメータを渡す想定
         return v switch
         {
-            View.Page2 => new Dictionary<string, object>
+            View.Create => new Dictionary<string, object>
             {
                 ["Mode"] = Chat.Components.Icons.IconMode.BootstrapIcons,
                 ["IconSource"] = "chat-dots",
