@@ -7,7 +7,7 @@ public partial class OrgActionModal : ComponentBase
     [Parameter] public bool IsShown { get; set; } = false;
     [Parameter] public Page ParentPage { get; set; } = null!;
 
-    public enum View { Top, Create, Search }
+    public enum View { Top, Create, Search, Join }
 
     View current = View.Top;
 
@@ -64,9 +64,10 @@ public partial class OrgActionModal : ComponentBase
     private Type GetTypeFor(View v) => v switch
     {
         View.Top => typeof(Contents.OrgListModalContent),
-        View.Create => typeof(Chat.Components.Icons),
-        View.Search => typeof(Chat.Components.Header),
-        _ => typeof(Chat.Components.Member)
+        View.Create => typeof(Contents.OrgCreateModalContent),
+        // View.Search => typeof(Contents.UnimplementedModalContent),
+        View.Join => typeof(Contents.OrgJoinModalContent),
+        _ => typeof(Contents.UnimplementedModalContent)
     };
 
     private IDictionary<string, object>? GetParamsFor(View v)
@@ -74,13 +75,13 @@ public partial class OrgActionModal : ComponentBase
         // 例：Page2 に Title パラメータを渡す想定
         return v switch
         {
-            View.Create => new Dictionary<string, object>
-            {
-                ["Mode"] = Chat.Components.Icons.IconMode.BootstrapIcons,
-                ["IconSource"] = "chat-dots",
-                ["Height"] = "32px",
-                ["Width"] = "32px"
-            },
+            // View.Create => new Dictionary<string, object>
+            // {
+            //     ["Mode"] = Chat.Components.Icons.IconMode.BootstrapIcons,
+            //     ["IconSource"] = "chat-dots",
+            //     ["Height"] = "32px",
+            //     ["Width"] = "32px"
+            // },
             _ => null
         };
     }
