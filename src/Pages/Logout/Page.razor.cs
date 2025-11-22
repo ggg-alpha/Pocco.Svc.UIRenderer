@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Google.Protobuf;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;

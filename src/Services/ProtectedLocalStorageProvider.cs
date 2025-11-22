@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Mvc;
-using Pocco.Client.Web.Models;
+using Pocco.APIClient.Core;
 
 namespace Pocco.Client.Web.Services;
 

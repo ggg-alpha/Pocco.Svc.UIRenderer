@@ -1,10 +1,6 @@
 using System.Text.Json;
-using Grpc.Core;
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
-using Pocco.Client.Web.Models;
-using Pocco.Libs.Protobufs.Services;
+using Pocco.APIClient.Core;
 
 namespace Pocco.Client.Web.Services;
 
@@ -12,30 +8,50 @@ public partial class GrpcClientFeeder : IDisposable
 {
     public readonly Guid Id;
     public int ConnectionCount { get; private set; } = 0;
+    public readonly APIClient.Core.APIClient ApiClient;
 
     private readonly ProtectedLocalStorageProvider _storage;
     private readonly ILogger<ComponentBase> _logger;
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly V0ApiService.V0ApiServiceClient _v0Api;
-    private SessionData? _currentSessionData = null;
 
-    private Task _sessionRefresher;
-
-    public GrpcClientFeeder(Guid id, [FromServices] ProtectedLocalStorageProvider localStorageProvider, [FromServices] ILogger<ComponentBase> logger)
+    public GrpcClientFeeder(Guid id, ProtectedLocalStorageProvider localStorageProvider, ILogger<ComponentBase> logger)
     {
         _logger = logger;
-
+        ApiClient = new APIClient.Core.APIClient(new APIClientConfigurations(APIClientType.User), logger);
 
         Id = id;
         _storage = localStorageProvider;
         _cancellationTokenSource = new CancellationTokenSource();
-        // _exampleLoopableTask = Task.Run(() => ExampleLoopableTask(cts.Token), cts.Token);
 
-        var apiConnectionString = Environment.GetEnvironmentVariable("API_CONNECTION_URL") ?? "https://localhost:7073";
-        var channel = GrpcChannel.ForAddress(apiConnectionString);
-        _v0Api = new V0ApiService.V0ApiServiceClient(channel);
+        // Try to get session data from storage
+        try
+        {
+            var sessionData = _storage.GetSessionDataAsync().GetAwaiter().GetResult();
+            if (sessionData is not null)
+            {
+                ApiClient.SessionManager.VerifySessionAsync(sessionData).GetAwaiter().GetResult();
+                _logger.LogInformation("GrpcClientFeeder {Id} loaded session data from storage", Id);
+            }
+            else
+            {
+                _logger.LogInformation("GrpcClientFeeder {Id} found no session data in storage", Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GrpcClientFeeder {Id} failed to load session data from storage", Id);
+        }
 
-        _sessionRefresher = Task.Run(() => RefreshSessionTask(_cancellationTokenSource.Token), _cancellationTokenSource.Token);
+        ApiClient.EventHub.GetObservable<ClientEvents.OnClientLoggedIn>().Subscribe(async evt =>
+        {
+            _logger.LogInformation("GrpcClientFeeder {Id} received OnClientLoggedIn event", Id);
+            await _storage.SetSessionDataAsync(evt.Session);
+        }, _cancellationTokenSource.Token);
+        ApiClient.EventHub.GetObservable<ClientEvents.OnSessionRefreshed>().Subscribe(async evt =>
+        {
+            _logger.LogInformation("GrpcClientFeeder {Id} received OnSessionRefreshed event", Id);
+            await _storage.SetSessionDataAsync(evt.Session);
+        }, _cancellationTokenSource.Token);
 
         _logger.LogInformation("GrpcClientFeeder {Id} created", Id);
     }
@@ -48,34 +64,8 @@ public partial class GrpcClientFeeder : IDisposable
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
 
-        _sessionRefresher.Wait();
-
         _logger.LogInformation("GrpcClientFeeder {Id} disposed", Id);
 
         GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// V0ApiSessionDataからgRPCのMetadataに変換する
-    /// </summary>
-    /// <param name="context">ページ内のContext</param>
-    /// <returns><seealso cref="Metadata"/></returns>
-    private static Metadata CreateMetadata(V0ApiSessionData data)
-    {
-        var createdAtStr = JsonSerializer.Serialize(data.CreatedAt);
-        var expiresAtStr = JsonSerializer.Serialize(data.ExpiresAt);
-        var updatedAtStr = JsonSerializer.Serialize(data.UpdatedAt);
-
-        var metadata = new Metadata
-        {
-            { "Authorization", $"Bearer {data.Token}" },
-            { "x-session-id", data.SessionId },
-            { "x-account-id", data.AccountId },
-            { "x-created-at", createdAtStr },
-            { "x-expires-at", expiresAtStr },
-            { "x-updated-at", updatedAtStr }
-        };
-
-        return metadata;
     }
 }

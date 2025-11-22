@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
+using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Pages.Register;
 
@@ -69,7 +70,11 @@ partial class Page : ComponentBase
 
         try
         {
-            await _clientFeeder.RegisterAccountAsync(email, password);
+            await _clientFeeder.ApiClient.CreateAccountAsync(new V0AccountRegisterRequest
+            {
+                Email = email,
+                Password = password
+            });
 
             NavigationManager.NavigateTo("/login");
         }

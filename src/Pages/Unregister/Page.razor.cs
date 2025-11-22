@@ -14,6 +14,7 @@ partial class Page : ComponentBase
     [Inject] private ILogger<Page> Logger { get; set; } = null!;
     [Inject] private GrpcClientFeederProvider ClientFeederProvider { get; set; } = null!;
     [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
+    [Inject] private APIClient.Core.APIClient ApiClient { get; set; } = null!;
     private GrpcClientFeeder? _clientFeeder;
 
     private string email = string.Empty;
@@ -59,7 +60,7 @@ partial class Page : ComponentBase
                 return;
             }
 
-            await _clientFeeder.UnregisterAccountAsync(sessionData);
+            await _clientFeeder.ApiClient.DeleteAccountAsync();
 
             NavigationManager.NavigateTo("/login");
         }

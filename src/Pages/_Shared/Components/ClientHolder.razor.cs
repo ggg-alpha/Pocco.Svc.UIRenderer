@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Pocco.APIClient.Core;
 using Pocco.Client.Web.Services;
 
 namespace Pocco.Client.Web.Pages._Shared.Components;
