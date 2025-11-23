@@ -16,7 +16,12 @@ builder.Services.AddSingleton(sp =>
 {
     return new APIClientConfigurations(APIClientType.User);
 });
-builder.Services.AddSingleton<GrpcClientFeederProvider>();
+builder.Services.AddScoped(sp =>
+{
+    var config = sp.GetRequiredService<APIClientConfigurations>();
+    var logger = sp.GetRequiredService<ILogger<APIClient>>();
+    return new APIClient(config, logger);
+});
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

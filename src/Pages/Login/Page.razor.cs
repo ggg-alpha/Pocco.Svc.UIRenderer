@@ -18,9 +18,8 @@ partial class Page : ComponentBase
     private bool hasEmailError = false;
     private bool hasPasswordError = false;
 
-    private GrpcClientFeeder Service { get; set; } = null!;
+    [Inject] private APIClient.Core.APIClient ApiClient { get; set; } = null!;
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] private GrpcClientFeederProvider ServiceProvider { get; set; } = null!;
     [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Inject] protected ILogger<Page> Logger { get; set; } = null!;
 
@@ -28,52 +27,31 @@ partial class Page : ComponentBase
     {
         if (firstRender)
         {
-            // Get id from session storage (if exists)
-            var id = await LocalStorageProvider.GetDeviceIdAsync().ConfigureAwait(false);
-            if (id is Guid guid)
+            ApiClient.EventHub.GetObservable<Pocco.APIClient.Core.ClientEvents.OnClientLoggedIn>().Subscribe(async (evt) => // ! ブラウザ共有の影響で、lspが別サーキットになると動作しない
             {
-                Service = ServiceProvider.GetOrCreate(guid, () => new GrpcClientFeeder(guid, LocalStorageProvider, Logger));
-                if (Service is not null)
-                {
-                    Logger.LogInformation($"Retrieved existing scoped service ID from session storage: {Service.Id}");
-
-                    Service.IncrementConnectionCount();
-                }
-            }
-            else
-            {
-                Logger.LogInformation("No existing scoped service ID found in session storage. Creating new one.");
-
-                var newId = Guid.NewGuid();
-                Service = ServiceProvider.GetOrCreate(newId, () => new GrpcClientFeeder(newId, LocalStorageProvider, Logger));
-                Service.IncrementConnectionCount();
-
-                await LocalStorageProvider.SetDeviceIdAsync(newId);
-
-                Logger.LogInformation($"Created new scoped service ID: {Service.Id}");
-            }
-
-            if (Service is null)
-            {
-                Logger.LogError("GrpcClientFeeder service is null. Cannot verify session.");
-                // NavigationManager.NavigateTo("/error");
-                return;
-            }
+                Logger.LogInformation("GrpcClientFeeder received OnClientLoggedIn event");
+                await LocalStorageProvider.SetSessionDataAsync(evt.Session);
+            });
 
             // Verify session
             var sessionData = await LocalStorageProvider.GetSessionDataAsync();
             if (sessionData is not null)
             {
                 Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
-                await Service.ApiClient.SessionManager.VerifySessionAsync(sessionData);
-                NavigationManager.NavigateTo("/apps/v2/chat");
+                try
+                {
+                    await ApiClient.SessionManager.VerifySessionAsync(sessionData);
+                    NavigationManager.NavigateTo("/apps/v2/chat");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Failed to verify session data.");
+                }
             }
             else
             {
                 Logger.LogWarning("No session data found in local storage. Staying on login page.");
             }
-
-            Console.WriteLine("Chat Page Rendered");
         }
     }
 
@@ -121,13 +99,13 @@ partial class Page : ComponentBase
                 return;
             }
 
-            var isSuccess = await Service.ApiClient.SessionManager.LoginAsync(email, passwordHash);
+            var isSuccess = await ApiClient.SessionManager.LoginAsync(email, passwordHash);
 
             if (isSuccess)
             {
                 Logger.LogInformation("Login successful.");
 
-                var currentSession = Service.ApiClient.SessionManager.GetSessionData();
+                var currentSession = ApiClient.SessionManager.GetSessionData();
 
                 if (currentSession is null)
                 {
@@ -139,7 +117,16 @@ partial class Page : ComponentBase
                 }
 
                 Logger.LogInformation($"Current session data: {JsonSerializer.Serialize(currentSession)}");
-                await LocalStorageProvider.SetSessionDataAsync(currentSession);
+                try
+                {
+                    Logger.LogInformation("Storing session data to local storage.");
+                    await LocalStorageProvider.SetSessionDataAsync(currentSession);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Failed to store session data to local storage.");
+                    throw;
+                }
             }
             else
             {
