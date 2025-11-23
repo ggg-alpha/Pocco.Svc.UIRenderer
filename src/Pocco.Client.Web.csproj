@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
         <PackageReference Include="Grpc.Reflection" Version="2.71.0" />
-        <PackageReference Include="Pocco.Svc.CoreAPI.Grpc.Clients" Version="0.0.1-build-1761396923" />
+        <PackageReference Include="Pocco.APIClient.Core" Version="0.0.1-build-1763816768" />
     </ItemGroup>
 
 </Project>

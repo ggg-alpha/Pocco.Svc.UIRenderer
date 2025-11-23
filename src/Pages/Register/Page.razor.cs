@@ -1,18 +1,13 @@
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
+using Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Register;
 
 partial class Page : ComponentBase
 {
-    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-    [Inject] private ILogger<Page> Logger { get; set; } = null!;
-    [Inject] private GrpcClientFeederProvider ClientFeederProvider { get; set; } = null!;
-    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
-    private GrpcClientFeeder? _clientFeeder;
-
     private string email = string.Empty;
     private string emailError = string.Empty;
 
@@ -23,15 +18,30 @@ partial class Page : ComponentBase
     private bool hasEmailError = false;
     private bool hasPasswordError = false;
 
+
+    [Inject] private APIClient.Core.APIClient ApiClient { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
+    [Inject] protected ILogger<Page> Logger { get; set; } = null!;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var scopedServiceId = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "scopedServiceId");
-            var id = Guid.TryParse(scopedServiceId, out var guid) ? guid : Guid.NewGuid();
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "scopedServiceId", id.ToString());
+            // Verify session
+            var sessionData = await LocalStorageProvider.GetSessionDataAsync();
+            if (sessionData is not null)
+            {
+                Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
+                await ApiClient.SessionManager.VerifySessionAsync(sessionData);
+                NavigationManager.NavigateTo("/apps/v2/chat");
+            }
+            else
+            {
+                Logger.LogWarning("No session data found in local storage. Staying on login page.");
+            }
 
-            _clientFeeder = ClientFeederProvider.GetOrCreate(id, () => new GrpcClientFeeder(id, LocalStorageProvider, Logger));
+            Console.WriteLine("Chat Page Rendered");
         }
     }
 
@@ -61,15 +71,15 @@ partial class Page : ComponentBase
 
     private async Task HandleRegister()
     {
-        if (_clientFeeder == null)
-        {
-            Logger.LogError("GrpcClientFeeder is not initialized.");
-            return;
-        }
-
         try
         {
-            await _clientFeeder.RegisterAccountAsync(email, password);
+            var passwordHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(password)).ToString();
+
+            await ApiClient.CreateAccountAsync(new V0AccountRegisterRequest
+            {
+                Email = email,
+                Password = passwordHash
+            });
 
             NavigationManager.NavigateTo("/login");
         }

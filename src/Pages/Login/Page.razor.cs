@@ -1,15 +1,13 @@
+using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Pocco.Client.Web.Services;
 
 namespace Pocco.Client.Web.Pages.Login;
 
 partial class Page : ComponentBase
 {
-    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] private ILogger<Page> Logger { get; set; } = null!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-
     private string email = string.Empty;
     private string emailError = string.Empty;
 
@@ -19,6 +17,43 @@ partial class Page : ComponentBase
     private bool isLoading = false;
     private bool hasEmailError = false;
     private bool hasPasswordError = false;
+
+    [Inject] private APIClient.Core.APIClient ApiClient { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
+    [Inject] protected ILogger<Page> Logger { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ApiClient.EventHub.GetObservable<Pocco.APIClient.Core.ClientEvents.OnClientLoggedIn>().Subscribe(async (evt) => // ! ブラウザ共有の影響で、lspが別サーキットになると動作しない
+            {
+                Logger.LogInformation("GrpcClientFeeder received OnClientLoggedIn event");
+                await LocalStorageProvider.SetSessionDataAsync(evt.Session);
+            });
+
+            // Verify session
+            var sessionData = await LocalStorageProvider.GetSessionDataAsync();
+            if (sessionData is not null)
+            {
+                Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
+                try
+                {
+                    await ApiClient.SessionManager.VerifySessionAsync(sessionData);
+                    NavigationManager.NavigateTo("/apps/v2/chat");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Failed to verify session data.");
+                }
+            }
+            else
+            {
+                Logger.LogWarning("No session data found in local storage. Staying on login page.");
+            }
+        }
+    }
 
     private async Task OnEmailInputChange(ChangeEventArgs e)
     {
@@ -57,13 +92,48 @@ partial class Page : ComponentBase
 
         try
         {
-            // var response = await AuthClient.AuthenticateAsync(email, password);
+            var passwordHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(password)).ToString();
 
-            // Store session data to local storage
-            // var responseStr = JsonSerializer.Serialize(response);
-            // await JSRuntime.InvokeVoidAsync("localStorage.setItem", "sessionData", responseStr);
+            if (passwordHash is null)
+            {
+                return;
+            }
 
-            NavigationManager.NavigateTo("/apps");
+            var isSuccess = await ApiClient.SessionManager.LoginAsync(email, passwordHash);
+
+            if (isSuccess)
+            {
+                Logger.LogInformation("Login successful.");
+
+                var currentSession = ApiClient.SessionManager.GetSessionData();
+
+                if (currentSession is null)
+                {
+                    hasEmailError = true;
+                    hasPasswordError = true;
+
+                    Logger.LogError("Login failed: Session data is null after successful login.");
+                    return;
+                }
+
+                Logger.LogInformation($"Current session data: {JsonSerializer.Serialize(currentSession)}");
+                try
+                {
+                    Logger.LogInformation("Storing session data to local storage.");
+                    await LocalStorageProvider.SetSessionDataAsync(currentSession);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Failed to store session data to local storage.");
+                    throw;
+                }
+            }
+            else
+            {
+                throw new Exception("Login failed due to invalid credentials.");
+            }
+
+            NavigationManager.NavigateTo("/apps/v2/chat");
         }
         catch (Exception ex)
         {
