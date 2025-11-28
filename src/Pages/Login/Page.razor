@@ -12,21 +12,17 @@
         <label for="email">メールアドレス</label>
         <label for="email" id="emailError">@emailError</label>
       </div>
-      <input type="email" id="email" class="@(hasEmailError ? "error" : "")" name="email" placeholder="Enter your email"
-        @oninput="async (e) => await OnEmailInputChange(e)" @bind="email" required>
+      <input type="email" id="email" class="@(hasEmailError ? "error" : "")" name="email" placeholder="Enter your email" @oninput="async (e) => await OnEmailInputChange(e)" @bind="email" required>
     </div>
     <div class="password-input">
       <div class="input-info">
         <label for="password">パスワード</label>
         <label for="password" id="passwordError">@passwordError</label>
       </div>
-      <input type="password" id="password" class="@(hasPasswordError ? "error" : "")" name="password"
-        placeholder="Enter your password" @oninput="async (e) => await OnPasswordInputChange(e)" @bind="password"
-        required>
+      <input type="password" id="password" class="@(hasPasswordError ? "error" : "")" name="password" placeholder="Enter your password" @oninput="async (e) => await OnPasswordInputChange(e)" @bind="password" required>
     </div>
 
-    <button type="submit" class="login-btn" @onclick="async () => await HandleLogin()"
-      disabled="@(isLoading || hasEmailError || hasPasswordError || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))">
+    <button type="submit" class="login-btn" @onclick="async () => await HandleLogin()" disabled="@(isLoading || hasEmailError || hasPasswordError || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))">
       <span class="btn-text">ログイン</span>
     </button>
 

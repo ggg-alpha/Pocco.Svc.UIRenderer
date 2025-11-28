@@ -3,27 +3,21 @@
 @using Pocco.Client.Web.Pages.Chat.Components
 @layout Empty
 
-<div
-  class="h-100 w-100 d-flex flex-column justify-content-start align-items-start overflow-hidden bg-light position-relative">
+<div class="h-100 w-100 d-flex flex-column justify-content-start align-items-start overflow-hidden bg-light position-relative">
   <!-- Org select Modal -->
-  <OrgSelectModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager"
-    LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
+  <OrgSelectModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager" LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
   <!-- Org join Modal -->
-  <OrgJoinModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager"
-    LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
+  <OrgJoinModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager" LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
   <!-- Org create Modal -->
-  <OrgCreateModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager"
-    LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
+  <OrgCreateModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager" LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
-  <header class="w-100 d-flex flex-row justify-content-between align-items-center"
-    style="height: 45px; background-color: var(--bs-orange);">
+  <header class="w-100 d-flex flex-row justify-content-between align-items-center" style="height: 45px; background-color: var(--bs-orange);">
     <div class="h-100 d-flex flex-row justify-content-start align-items-center">
       <!-- Promotion -->
       <div class="h-100 d-flex flex-row justify-content-start align-items-center">
-        <img src="@Assets["/assets/logos/pocco-icon.png"]" alt="Pocco is here!"
-          style="width: 20px; height: 20px; margin-left: 10px;" />
+        <img src="@Assets["/assets/logos/pocco-icon.png"]" alt="Pocco is here!" style="width: 20px; height: 20px; margin-left: 10px;" />
         <h1 style="font-size: 16px; font-weight: bold; color: white; margin: 0 10px; padding: 0;">
           Pocco
         </h1>
@@ -31,11 +25,8 @@
     </div>
 
     <!-- Switcher -->
-    <div @onclick="async (e) => await OrgSelectModalRef!.Show(e)"
-      class="d-flex flex-row justify-content-start align-items-center dropdown rounded-2 position-relative"
-      style="width: 240px; margin: 0 25px; padding: 4px 8px; border: 1px solid gray; cursor: pointer;">
-      <img src="https://placehold.jp/120x120.png" alt="Pocco is here!" class="rounded-2"
-        style="width: 30px; height: 30px; margin-right: 5px;" />
+    <div @onclick="async (e) => await OrgSelectModalRef!.Show(e)" class="d-flex flex-row justify-content-start align-items-center dropdown rounded-2 position-relative" style="width: 240px; margin: 0 25px; padding: 4px 8px; border: 1px solid gray; cursor: pointer;">
+      <img src="https://placehold.jp/120x120.png" alt="Pocco is here!" class="rounded-2" style="width: 30px; height: 30px; margin-right: 5px;" />
       <div class="d-flex flex-grow-1" style="font-weight: 700;">
         Selected org name
       </div>
@@ -43,30 +34,22 @@
 
     <!-- Account icon -->
     <div class="h-100 d-flex flex-row justify-content-end align-items-center" style="margin-right: 10px;">
-      <img src="https://placehold.jp/120x120.png" alt="User icon"
-        style="width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" />
+      <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" />
     </div>
   </header>
 
   <!-- Body -->
-  <div class="h-100 w-100 d-flex flex-column justify-content-start align-items-start position-relative"
-    style="background-color: var(--bs-cyan);">
+  <div class="h-100 w-100 d-flex flex-column justify-content-start align-items-start position-relative" style="background-color: var(--bs-cyan);">
     <!-- Sidebar -->
-    <div class="h-100 d-flex flex-column justify-content-start align-items-center rounded-end-2 border-light"
-      style="width: 250px; background-color: tomato; padding: 10px 4px;">
+    <div class="h-100 d-flex flex-column justify-content-start align-items-center rounded-end-2 border-light" style="width: 250px; background-color: tomato; padding: 10px 4px;">
       <!-- Organization info center --> @* Mode: org/dm/welcome *@
-      <div class="d-flex flex-column justify-content-center align-items-start rounded-2 position-relative"
-        style="width: 95%; background-color: var(--bs-gray-600);">
-        <div class="w-100 d-flex flex-column justify-content-center align-items-center rounded-2 position-relative"
-          style="background-color: var(--bs-blue);">
-          <img src="https://placehold.jp/3d4070/ffffff/600x350.png" alt="Pocco is here!" class="rounded-2"
-            style="width: 100%; height: auto;" />
-          <img src="https://placehold.jp/120x120.png" alt="Pocco is here!" class="rounded-4 position-absolute"
-            style="width: 80px; height: 80px; margin-right: 5px; bottom: -25px; left: 25px;" />
+      <div class="d-flex flex-column justify-content-center align-items-start rounded-2 position-relative" style="width: 95%; background-color: var(--bs-gray-600);">
+        <div class="w-100 d-flex flex-column justify-content-center align-items-center rounded-2 position-relative" style="background-color: var(--bs-blue);">
+          <img src="https://placehold.jp/3d4070/ffffff/600x350.png" alt="Pocco is here!" class="rounded-2" style="width: 100%; height: auto;" />
+          <img src="https://placehold.jp/120x120.png" alt="Pocco is here!" class="rounded-4 position-absolute" style="width: 80px; height: 80px; margin-right: 5px; bottom: -25px; left: 25px;" />
         </div>
         <div class="p-4"></div>
-        <div class="w-100 d-flex flex-column justify-content-center align-items-start p-2 rounded-2 position-relative"
-          style="color: white; background-color: transparent;">
+        <div class="w-100 d-flex flex-column justify-content-center align-items-start p-2 rounded-2 position-relative" style="color: white; background-color: transparent;">
           <h4 class="w-100 mb-3" style="font-weight: 700;">The loooooongest Org name here</h4>
           <p>Organization description is here. Here is describe for organization's purpose.</p>
         </div>
@@ -93,36 +76,30 @@
       </div>
       <hr style="width: 95%;" />
       <!-- Channel list -->
-      <div class="w-100 d-flex flex-column justify-content-start align-items-center gap-1 overflow-scroll"
-        style="height: 0; flex-grow: 1;">
+      <div class="w-100 d-flex flex-column justify-content-start align-items-center gap-1 overflow-scroll" style="height: 0; flex-grow: 1;">
         <div class="channel_item_wrapper rounded-2" style="width: 95%; cursor: pointer;">
           <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
-            <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2"
-              style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+            <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
             <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
           </div>
         </div>
         <div class="category_wrapper rounded-2" style="width: 95%; cursor: pointer;">
           <div class="category d-flex flex-column justify-content-start align-items-start">
-            <div class="category_header d-flex flex-row justify-content-start align-items-center w-100"
-              @onclick="async (e) => await OnChatCategoryToggled(e)"> @* On Click target*@
+            <div class="category_header d-flex flex-row justify-content-start align-items-center w-100" @onclick="async (e) => await OnChatCategoryToggled(e)"> @* On Click target*@
               <i class="category_arrow bi bi-caret-down-fill @(_expandCategory == true ? "expanded" : "collapsed")"></i>
               <div class="flex-grow-1 text-truncate">Category nameeeeeeeeeeeeeeeeeeeeeeeeee</div>
               <i class="category_header_add-btn bi bi-plus"></i>
             </div>
-            <div class="category_items_wrapper ps-1 flex-column justify-content-start align-items-center w-100"
-              style="display: @(_expandCategory == true ? "flex" : "none");">
+            <div class="category_items_wrapper ps-1 flex-column justify-content-start align-items-center w-100" style="display: @(_expandCategory == true ? "flex" : "none");">
               <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
                 <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
-                  <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2"
-                    style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+                  <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
                   <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
                 </div>
               </div>
               <div class="channel_item_wrapper rounded-2 active" style="width: 100%; cursor: pointer;">
                 <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
-                  <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2"
-                    style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+                  <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
                   <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
                 </div>
               </div>

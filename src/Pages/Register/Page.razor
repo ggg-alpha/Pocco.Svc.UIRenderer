@@ -12,17 +12,14 @@
         <label for="email">メールアドレス</label>
         <label for="email" id="emailError">@emailError</label>
       </div>
-      <input type="email" id="email" class="@(hasEmailError ? "error" : "")" name="email" placeholder="Enter your email"
-        @oninput="async (e) => await OnEmailInputChange(e)" @bind-value="email" required>
+      <input type="email" id="email" class="@(hasEmailError ? "error" : "")" name="email" placeholder="Enter your email" @oninput="async (e) => await OnEmailInputChange(e)" @bind-value="email" required>
     </div>
     <div class="password-input">
       <div class="input-info">
         <label for="password">パスワード</label>
         <label for="password" id="passwordError">@passwordError</label>
       </div>
-      <input type="password" id="password" class="@(hasPasswordError ? "error" : "")" name="password"
-        placeholder="Enter your password" @oninput="async (e) => await OnPasswordInputChange(e)" @bind-value="password"
-        required>
+      <input type="password" id="password" class="@(hasPasswordError ? "error" : "")" name="password" placeholder="Enter your password" @oninput="async (e) => await OnPasswordInputChange(e)" @bind-value="password" required>
     </div>
 
     <button type="submit" class="register-btn" @onclick="async () => await HandleRegister()">
