@@ -6,8 +6,7 @@ using Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Register;
 
-partial class Page : ComponentBase
-{
+partial class Page : ComponentBase {
     private string email = string.Empty;
     private string emailError = string.Empty;
 
@@ -24,20 +23,15 @@ partial class Page : ComponentBase
     [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Inject] protected ILogger<Page> Logger { get; set; } = null!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
             // Verify session
             var sessionData = await LocalStorageProvider.GetSessionDataAsync();
-            if (sessionData is not null)
-            {
+            if (sessionData is not null) {
                 Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
                 await ApiClient.SessionManager.VerifySessionAsync(sessionData);
                 NavigationManager.NavigateTo("/apps/v2/chat");
-            }
-            else
-            {
+            } else {
                 Logger.LogWarning("No session data found in local storage. Staying on login page.");
             }
 
@@ -45,8 +39,7 @@ partial class Page : ComponentBase
         }
     }
 
-    private async Task OnEmailInputChange(ChangeEventArgs e)
-    {
+    private async Task OnEmailInputChange(ChangeEventArgs e) {
         var value = e.Value?.ToString() ?? string.Empty;
 
         var isValid = string.IsNullOrWhiteSpace(value);
@@ -57,8 +50,7 @@ partial class Page : ComponentBase
 
         await Task.CompletedTask;
     }
-    private async Task OnPasswordInputChange(ChangeEventArgs e)
-    {
+    private async Task OnPasswordInputChange(ChangeEventArgs e) {
         var value = e.Value?.ToString() ?? string.Empty;
 
         var empty = string.IsNullOrWhiteSpace(value);
@@ -69,29 +61,23 @@ partial class Page : ComponentBase
     }
 
 
-    private async Task HandleRegister()
-    {
-        try
-        {
+    private async Task HandleRegister() {
+        try {
             var passwordHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(password)).ToString();
 
-            await ApiClient.CreateAccountAsync(new V0AccountRegisterRequest
-            {
+            await ApiClient.CreateAccountAsync(new V0AccountRegisterRequest {
                 Email = email,
                 Password = passwordHash
             });
 
             NavigationManager.NavigateTo("/login");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Logger.LogError($"Registration failed: {ex.Message}");
             return;
         }
     }
 
-    private void GoToLoginPage()
-    {
+    private void GoToLoginPage() {
         NavigationManager.NavigateTo("/login");
     }
 }

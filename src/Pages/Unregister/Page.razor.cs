@@ -7,27 +7,21 @@ using Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Unregister;
 
-partial class Page : ComponentBase
-{
+partial class Page : ComponentBase {
     [Inject] private APIClient.Core.APIClient ApiClient { get; set; } = null!;
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Inject] protected ILogger<Page> Logger { get; set; } = null!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
             // Verify session
             var sessionData = await LocalStorageProvider.GetSessionDataAsync();
-            if (sessionData is not null)
-            {
+            if (sessionData is not null) {
                 Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
                 await ApiClient.SessionManager.VerifySessionAsync(sessionData);
                 NavigationManager.NavigateTo("/apps/v2/chat");
-            }
-            else
-            {
+            } else {
                 Logger.LogWarning("No session data found in local storage. Staying on login page.");
             }
 
@@ -37,14 +31,11 @@ partial class Page : ComponentBase
         await HandleUnregister();
     }
 
-    private async Task HandleUnregister()
-    {
-        try
-        {
+    private async Task HandleUnregister() {
+        try {
             // Get session data from local storage
             var sessionData = await LocalStorageProvider.GetSessionDataAsync();
-            if (sessionData is null)
-            {
+            if (sessionData is null) {
                 NavigationManager.NavigateTo("/login");
                 return;
             }
@@ -56,9 +47,7 @@ partial class Page : ComponentBase
 
             await LocalStorageProvider.ClearSessionDataAsync();
             NavigationManager.NavigateTo("/register");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Logger.LogError($"Registration failed: {ex.Message}");
             return;
         }

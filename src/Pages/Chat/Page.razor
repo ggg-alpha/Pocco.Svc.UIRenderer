@@ -1,80 +1,135 @@
-@page "/apps/v2/chat"
-@layout Chat.Layouts.MainFrame
+@page "/chat/"
+@page "/chat/{OrgId?}"
 @using Pocco.Client.Web.Pages.Chat.Components
-@using Pocco.Client.Web.Pages.Chat.Components.Modals
-@using Pocco.Client.Web.Pages.Chat.Layouts
+@layout Empty
 
-@*
-    TODO: イベントの実装
-    TODO: 1. APIをこのページに統合
-    TODO: 2. APIイベントの購読をこのページに統合
-    TODO: 3. 組織の取得、選択、切り替えの実装
-    TODO: 4. チャット選択、チャット表示の実装
-    TODO: 5. メンバーリストの実装
- *@
+<div
+  class="h-100 w-100 d-flex flex-column justify-content-start align-items-start overflow-hidden bg-light position-relative">
+  <!-- Org select Modal -->
+  <OrgSelectModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager"
+    LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
-<OrgActionModal IsShown=@_isModalShown ParentPage="this" />
+  <!-- Org join Modal -->
+  <OrgJoinModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager"
+    LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
-<Header>
-    <Promotion IsBordered=false />
+  <!-- Org create Modal -->
+  <OrgCreateModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager"
+    LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
-    <div class="d-flex gap-4">
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="inbox-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="question-circle-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="cloud-download-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-    </div>
-</Header>
-
-<MainContentFrame>
-    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
-        Width="35px">
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="chat-dots-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="calendar-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="table" Cursor="pointer" Color="#16283a" Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="easel2-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="camera-reels-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="images" Cursor="pointer" Color="#16283a" Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="journal-richtext" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-    </Sidebar>
-    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
-        Width="240px">
-        <OrganizationSelector ParentPage="this" />
-        <div
-            class="w-100 px-1 pt-1 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
-            <Chats Type="Chats.ChatType.Message" Name="Generallllllllllllllllllllllllllllll" />
-            <Chats Type="Chats.ChatType.Category" Name="カテゴリー1" Id="category1" Children="_sampleChatsList.Children" />
-        </div>
-    </Sidebar>
-
-    <div class="d-flex flex-column flex-grow-1 h-100">
-        <ChatHeader ChatName="Sample Chat" Description="Sample chat description!" />
-        <ChatArea Messages="_sampleMessages" />
+  <header class="w-100 d-flex flex-row justify-content-between align-items-center"
+    style="height: 45px; background-color: var(--bs-orange);">
+    <div class="h-100 d-flex flex-row justify-content-start align-items-center">
+      <!-- Promotion -->
+      <div class="h-100 d-flex flex-row justify-content-start align-items-center">
+        <img src="@Assets["/assets/logos/pocco-icon.png"]" alt="Pocco is here!"
+          style="width: 20px; height: 20px; margin-left: 10px;" />
+        <h1 style="font-size: 16px; font-weight: bold; color: white; margin: 0 10px; padding: 0;">
+          Pocco
+        </h1>
+      </div>
     </div>
 
-    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Hidden"
-        Width="240px">
-        <div
-            class="w-100 px-2 pt-2 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
-            <Member Name="Member 1" CustomStatusMessage="やっほー" Status="Member.MemberStatus.Online" />
-            <Member Name="Member 2" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
-            <Member Name="Member 3" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
-            <Member Name="Member 4" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
-            <Member Name="Member 5" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
-            <Member Name="Member 6" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
-            <Member Name="Member 7" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
-            <Member Name="Member 8" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
-            <Member Name="Member 9" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
-            <Member Name="Member 10" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
-            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
-            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
+    <!-- Switcher -->
+    <div @onclick="async (e) => await OrgSelectModalRef!.Show(e)"
+      class="d-flex flex-row justify-content-start align-items-center dropdown rounded-2 position-relative"
+      style="width: 240px; margin: 0 25px; padding: 4px 8px; border: 1px solid gray; cursor: pointer;">
+      <img src="https://placehold.jp/120x120.png" alt="Pocco is here!" class="rounded-2"
+        style="width: 30px; height: 30px; margin-right: 5px;" />
+      <div class="d-flex flex-grow-1" style="font-weight: 700;">
+        Selected org name
+      </div>
+    </div>
+
+    <!-- Account icon -->
+    <div class="h-100 d-flex flex-row justify-content-end align-items-center" style="margin-right: 10px;">
+      <img src="https://placehold.jp/120x120.png" alt="User icon"
+        style="width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" />
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="h-100 w-100 d-flex flex-column justify-content-start align-items-start position-relative"
+    style="background-color: var(--bs-cyan);">
+    <!-- Sidebar -->
+    <div class="h-100 d-flex flex-column justify-content-start align-items-center rounded-end-2 border-light"
+      style="width: 250px; background-color: tomato; padding: 10px 4px;">
+      <!-- Organization info center --> @* Mode: org/dm/welcome *@
+      <div class="d-flex flex-column justify-content-center align-items-start rounded-2 position-relative"
+        style="width: 95%; background-color: var(--bs-gray-600);">
+        <div class="w-100 d-flex flex-column justify-content-center align-items-center rounded-2 position-relative"
+          style="background-color: var(--bs-blue);">
+          <img src="https://placehold.jp/3d4070/ffffff/600x350.png" alt="Pocco is here!" class="rounded-2"
+            style="width: 100%; height: auto;" />
+          <img src="https://placehold.jp/120x120.png" alt="Pocco is here!" class="rounded-4 position-absolute"
+            style="width: 80px; height: 80px; margin-right: 5px; bottom: -25px; left: 25px;" />
         </div>
-    </Sidebar>
-</MainContentFrame>
+        <div class="p-4"></div>
+        <div class="w-100 d-flex flex-column justify-content-center align-items-start p-2 rounded-2 position-relative"
+          style="color: white; background-color: transparent;">
+          <h4 class="w-100 mb-3" style="font-weight: 700;">The loooooongest Org name here</h4>
+          <p>Organization description is here. Here is describe for organization's purpose.</p>
+        </div>
+        <div class="w-100 ps-1 pe-1 pb-1">
+          <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
+            <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+              <i class="bi bi-hammer ps-1 pe-1"></i>
+              <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Guidelines</p>
+            </div>
+          </div>
+          <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
+            <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+              <i class="bi bi-person-bounding-box ps-1 pe-1"></i>
+              <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Members</p>
+            </div>
+          </div>
+          <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
+            <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+              <i class="bi bi-gear-fill ps-1 pe-1"></i>
+              <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Settings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr style="width: 95%;" />
+      <!-- Channel list -->
+      <div class="w-100 d-flex flex-column justify-content-start align-items-center gap-1 overflow-scroll"
+        style="height: 0; flex-grow: 1;">
+        <div class="channel_item_wrapper rounded-2" style="width: 95%; cursor: pointer;">
+          <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+            <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2"
+              style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+            <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
+          </div>
+        </div>
+        <div class="category_wrapper rounded-2" style="width: 95%; cursor: pointer;">
+          <div class="category d-flex flex-column justify-content-start align-items-start">
+            <div class="category_header d-flex flex-row justify-content-start align-items-center w-100"
+              @onclick="async (e) => await OnChatCategoryToggled(e)"> @* On Click target*@
+              <i class="category_arrow bi bi-caret-down-fill @(_expandCategory == true ? "expanded" : "collapsed")"></i>
+              <div class="flex-grow-1 text-truncate">Category nameeeeeeeeeeeeeeeeeeeeeeeeee</div>
+              <i class="category_header_add-btn bi bi-plus"></i>
+            </div>
+            <div class="category_items_wrapper ps-1 flex-column justify-content-start align-items-center w-100"
+              style="display: @(_expandCategory == true ? "flex" : "none");">
+              <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
+                <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+                  <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2"
+                    style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+                  <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
+                </div>
+              </div>
+              <div class="channel_item_wrapper rounded-2 active" style="width: 100%; cursor: pointer;">
+                <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+                  <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2"
+                    style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+                  <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

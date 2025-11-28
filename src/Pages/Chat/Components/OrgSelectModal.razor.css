@@ -1,0 +1,31 @@
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.search_org_input {
+  box-shadow: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 16px;
+  transition: border 0.3s ease;
+}
+
+.search_org_input:focus {
+  box-shadow: none;
+  border: 1px solid #5e69ff;
+  outline: none;
+}
+
+.open_join_to_org_btn,
+.open_create_org_btn {
+  color: #5e69ff;
+  border: 1px solid transparent;
+}
+
+.open_join_to_org_btn:hover,
+.open_create_org_btn:hover {
+  background-color: #e2e4ff;
+  border: 1px solid #b0b6ff;
+}
