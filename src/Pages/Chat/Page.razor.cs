@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Pocco.APIClient.Core;
 using Pocco.Client.Web.Services;
+using Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Chat;
 
@@ -49,6 +50,28 @@ public partial class Page : ComponentBase {
                 Logger.LogWarning("No session data found in local storage. Staying on login page.");
                 NavigationManager.NavigateTo("/login");
             }
+
+            // Get account profile
+            var profile = await ApiClient.GetAccountAsync(new V0AccountGetProfileRequest {
+                UserId = sessionData?.AccountId ?? string.Empty
+            });
+
+            // Get organizations with account.orgIds
+            var orgs = new List<Organization>();
+            foreach (var orgId in profile.OrganizationIds) {
+                try {
+                    var org = await ApiClient.GetOrganizationAsync(new V0BaseRequest {
+                        Id = orgId
+                    });
+                    orgs.Add(org);
+                } catch (Exception ex) {
+                    Logger.LogError(ex, "Failed to get organization data for OrgId: {OrgId}", orgId);
+                }
+            }
+
+            // Save profile and orgs to local storage
+            await LocalStorageProvider.SetProfileAsync(profile);
+            await LocalStorageProvider.SetOrganizationsAsync(orgs);
         }
     }
 
