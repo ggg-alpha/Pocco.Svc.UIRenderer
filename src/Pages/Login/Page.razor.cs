@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
 
 namespace Pocco.Client.Web.Pages.Login;
@@ -80,13 +80,15 @@ partial class Page : ComponentBase {
         isLoading = true;
 
         try {
-            var passwordHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(password)).ToString();
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            var passwordHash = SHA256.HashData(passwordBytes);
+            var passwordHashString = Convert.ToBase64String(passwordHash);
 
-            if (passwordHash is null) {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(passwordHashString)) {
                 return;
             }
 
-            var isSuccess = await ApiClient.SessionManager.LoginAsync(email, passwordHash);
+            var isSuccess = await ApiClient.SessionManager.LoginAsync(email, passwordHashString);
 
             if (isSuccess) {
                 Logger.LogInformation("Login successful.");

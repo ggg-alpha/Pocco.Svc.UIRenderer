@@ -19,11 +19,24 @@ public partial class Page : ComponentBase {
 
     private bool _expandCategory = true;
 
+    protected override async Task OnInitializedAsync() {
+        Logger.LogInformation("Chat Page Initialized with OrgId: {OrgId}", OrgId);
+
+        await Task.CompletedTask;
+    }
+
+    protected override async Task OnParametersSetAsync() {
+        Logger.LogInformation("Chat Page Parameters Set. Current OrgId: {OrgId}", OrgId);
+
+        await Task.CompletedTask;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
             if (string.IsNullOrWhiteSpace(OrgId)) {
                 Logger.LogInformation("No organization ID provided in URL. Redirecting to direct messages page.");
-                NavigationManager.NavigateTo("/chat/direct-messages");
+                NavigationManager.NavigateTo("/chat/direct-messages"); // TODO: ダイレクトメッセージページ（別コンポーネント）に変更
+                return;
             }
 
             ApiClient.EventHub.GetObservable<ClientEvents.OnClientLoggedIn>().Subscribe(async (evt) => {
@@ -72,14 +85,40 @@ public partial class Page : ComponentBase {
             // Save profile and orgs to local storage
             await LocalStorageProvider.SetProfileAsync(profile);
             await LocalStorageProvider.SetOrganizationsAsync(orgs);
+
+            // Register Events
+            ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationInfoCreated>().Subscribe(async (evt) => {
+                Logger.LogInformation("Received OnOrganizationCreated event for Org ID: {OrgId}", evt.Organization.OrganizationId);
+                // Update event listeneing filter
+                var listenReq = new ListenRequest {
+                    UserId = ApiClient.SessionManager.GetSessionData()?.AccountId ?? string.Empty,
+                    SessionId = ApiClient.SessionManager.GetSessionData()?.SessionId ?? string.Empty,
+                    ActiveOrganizationId = evt.Organization.OrganizationId // TODO: 組織IDのページでロードしたときに変わるようにする
+                };
+                listenReq.OrganizationIds.AddRange(ApiClient.EventListener.CurrentListeningEvents.OrganizationIds);
+                listenReq.OrganizationIds.Add(evt.Organization.OrganizationId);
+
+                // Logger.LogInformation("Subscribing to organization ID: {OrgId}", evt.Organization.OrganizationId);
+
+                // ApiClient.EventListener.UpdateSubscriptionAsync(listenReq).Wait();
+
+                // Logger.LogInformation("Updated event listener subscription to include new organization ID: {OrgId}", evt.Organization.OrganizationId);
+
+                // Navigate to the newly created organization's chat page
+                await InvokeAsync(() => NavigationManager.NavigateTo($"/chat/{evt.Organization.OrganizationId}", forceLoad: false));
+            });
+
+            // Start listening to events
+            await ApiClient.EventListener.StartListeningAsync(new ListenRequest {
+                UserId = sessionData?.AccountId ?? string.Empty,
+                SessionId = sessionData?.SessionId ?? string.Empty
+            });
         }
     }
 
     private async Task OnChatCategoryToggled(MouseEventArgs e) {
-        Logger.LogInformation("Chat category toggled!");
-
         _expandCategory = !_expandCategory;
 
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 }

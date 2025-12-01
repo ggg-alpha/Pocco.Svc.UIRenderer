@@ -18,17 +18,17 @@ public partial class OrgJoinModal : ComponentBase {
 
     protected override async Task OnInitializedAsync() {
         ParentPageRef.OrgJoinModalRef = this;
+
+        await Task.CompletedTask;
     }
 
     public async Task Show(MouseEventArgs e) {
-        Logger.LogInformation("Organization create or join opened!");
         _hideJoinModal = false;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
     private async Task Hide(MouseEventArgs e) {
-        Logger.LogInformation("Organization create or join closed!");
         _hideJoinModal = true;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task OnJoinCodeInputChange(ChangeEventArgs e) {
@@ -41,9 +41,12 @@ public partial class OrgJoinModal : ComponentBase {
         }
 
         Logger.LogInformation("Join code input changed: {JoinCode}", value);
+
+        await Task.CompletedTask;
     }
 
     private async Task OnJoinSubmitClicked() {
-        Logger.LogInformation("Join submit clicked!");
+
+        await Task.CompletedTask;
     }
 }

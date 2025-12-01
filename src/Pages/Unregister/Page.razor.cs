@@ -1,9 +1,6 @@
 using System.Text.Json;
-using Grpc.Core;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
-using Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Unregister;
 

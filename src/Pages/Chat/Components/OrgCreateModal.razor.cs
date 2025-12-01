@@ -28,17 +28,17 @@ public partial class OrgCreateModal : ComponentBase {
 
     protected override async Task OnInitializedAsync() {
         ParentPageRef.OrgCreateModalRef = this;
+
+        await Task.CompletedTask;
     }
 
     public async Task Show(MouseEventArgs e) {
-        Logger.LogInformation("Organization create modal opened!");
         _hideCreateModal = false;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
     private async Task Hide(MouseEventArgs e) {
-        Logger.LogInformation("Organization create modal closed!");
         _hideCreateModal = true;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private void OnOrgNameChanged(ChangeEventArgs e) {
@@ -76,17 +76,22 @@ public partial class OrgCreateModal : ComponentBase {
         }
 
         try {
-            var orgId = await ApiClient.CreateOrganizationAsync(new V0CreateOrganizationRequest {
+            var reply = await ApiClient.CreateOrganizationAsync(new V0CreateOrganizationRequest {
                 Base = new V0CreateXRequest {
                     Name = _orgName
                 },
                 Description = _orgDesc
             });
 
-            Logger.LogInformation("Organization created successfully with ID: {OrgId}", orgId);
+            Logger.LogInformation("Organization creation requested with EventId: {EventId}", reply.EventId);
 
-            // Navigate to the newly created organization's chat page
-            NavigationManager.NavigateTo($"/chat/{orgId}");
+            // Hide the modal
+            _hideCreateModal = true;
+            ParentPageRef.OrgSelectModalRef!._hideModal = true;
+            await InvokeAsync(StateHasChanged);
+
+            // Log the api client is listening now
+            Logger.LogInformation("The ApiClient is now listening these events: {Filter}", ApiClient.EventListener.CurrentListeningEvents);
         } catch (Exception ex) {
             Logger.LogError(ex, "Failed to create organization.");
         }

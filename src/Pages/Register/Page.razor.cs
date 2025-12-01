@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
 using Pocco.Libs.Protobufs.CoreAPI.Services;
 
@@ -13,7 +13,6 @@ partial class Page : ComponentBase {
     private string password = string.Empty;
     private string passwordError = string.Empty;
 
-    private bool isLoading = false;
     private bool hasEmailError = false;
     private bool hasPasswordError = false;
 
@@ -63,11 +62,14 @@ partial class Page : ComponentBase {
 
     private async Task HandleRegister() {
         try {
-            var passwordHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(password)).ToString();
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            var passwordHash = SHA256.HashData(passwordBytes);
+            var passwordHashString = Convert.ToBase64String(passwordHash);
+
 
             await ApiClient.CreateAccountAsync(new V0AccountRegisterRequest {
                 Email = email,
-                Password = passwordHash
+                Password = passwordHashString
             });
 
             NavigationManager.NavigateTo("/login");

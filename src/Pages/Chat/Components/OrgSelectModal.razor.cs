@@ -16,41 +16,36 @@ public partial class OrgSelectModal : ComponentBase {
 
     protected override async Task OnInitializedAsync() {
         ParentPageRef.OrgSelectModalRef = this;
+
+        await Task.CompletedTask;
     }
 
-    public async Task Show(MouseEventArgs e) { // コンポーネント化するときにorgIdをクラスパラメータにする
-        Logger.LogInformation("Organization switcher opened!");
+    public async Task Show(MouseEventArgs e) {
         _hideModal = false;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
     private async Task OnOrgSwitcherOrgSelectedClicked(MouseEventArgs e, string orgId) {
-        Logger.LogInformation("Organization selected from switcher: {OrgId}", orgId);
         NavigationManager.NavigateTo($"/chat/{orgId}");
+
+        await Task.CompletedTask;
     }
     private async Task Hide(MouseEventArgs e) {
-        Logger.LogInformation("Organization switcher closed!");
         _hideModal = true;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
     private async Task OnOrgSearchInputChanged(ChangeEventArgs e) {
         var value = e.Value?.ToString() ?? string.Empty;
 
-        Logger.LogInformation("Organization search input changed: {SearchInput}", value);
+        await Task.CompletedTask;
     }
 
     private async Task OnOrgJoinClicked(MouseEventArgs e) {
-        Logger.LogInformation("Organization join clicked from switcher!");
-
         if (ParentPageRef.OrgJoinModalRef is not null) {
-            Logger.LogInformation("Calling OrgJoinModal.Show()");
             await ParentPageRef.OrgJoinModalRef.Show(e);
         }
     }
     private async Task OnOrgCreateClicked(MouseEventArgs e) {
-        Logger.LogInformation("Organization create clicked from switcher!");
-
         if (ParentPageRef.OrgCreateModalRef is not null) {
-            Logger.LogInformation("Calling OrgCreateModal.Show()");
             await ParentPageRef.OrgCreateModalRef.Show(e);
         }
     }
