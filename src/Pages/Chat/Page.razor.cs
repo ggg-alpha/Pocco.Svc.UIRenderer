@@ -16,6 +16,7 @@ public partial class Page : ComponentBase {
     public Components.OrgSelectModal? OrgSelectModalRef;
     public Components.OrgJoinModal? OrgJoinModalRef;
     public Components.OrgCreateModal? OrgCreateModalRef;
+    public Components.OrgSettingsModal? OrgSettingsModalRef;
 
     private bool _expandCategory = true;
 
@@ -89,23 +90,15 @@ public partial class Page : ComponentBase {
             // Register Events
             ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationInfoCreated>().Subscribe(async (evt) => {
                 Logger.LogInformation("Received OnOrganizationCreated event for Org ID: {OrgId}", evt.Organization.OrganizationId);
-                // Update event listeneing filter
-                var listenReq = new ListenRequest {
-                    UserId = ApiClient.SessionManager.GetSessionData()?.AccountId ?? string.Empty,
-                    SessionId = ApiClient.SessionManager.GetSessionData()?.SessionId ?? string.Empty,
-                    ActiveOrganizationId = evt.Organization.OrganizationId // TODO: 組織IDのページでロードしたときに変わるようにする
-                };
-                listenReq.OrganizationIds.AddRange(ApiClient.EventListener.CurrentListeningEvents.OrganizationIds);
-                listenReq.OrganizationIds.Add(evt.Organization.OrganizationId);
-
-                // Logger.LogInformation("Subscribing to organization ID: {OrgId}", evt.Organization.OrganizationId);
-
-                // ApiClient.EventListener.UpdateSubscriptionAsync(listenReq).Wait();
-
-                // Logger.LogInformation("Updated event listener subscription to include new organization ID: {OrgId}", evt.Organization.OrganizationId);
 
                 // Navigate to the newly created organization's chat page
                 await InvokeAsync(() => NavigationManager.NavigateTo($"/chat/{evt.Organization.OrganizationId}", forceLoad: false));
+            });
+            ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationInfoDeleted>().Subscribe(async (evt) => {
+                Logger.LogInformation("Received OnOrganizationInfoDeleted event for Org ID: {OrgId}", evt.OrganizationId);
+
+                // Navigate to the newly created organization's chat page
+                await InvokeAsync(() => NavigationManager.NavigateTo($"/chat/direct-messages", forceLoad: false));
             });
 
             // Start listening to events

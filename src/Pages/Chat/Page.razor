@@ -13,6 +13,9 @@
   <!-- Org create Modal -->
   <OrgCreateModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager" LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
+  <!-- Org settings Modal -->
+  <OrgSettingsModal ParantPage="this" />
+
   <header class="w-100 d-flex flex-row justify-content-between align-items-center" style="height: 45px; background-color: var(--bs-orange);">
     <div class="h-100 d-flex flex-row justify-content-start align-items-center">
       <!-- Promotion -->
@@ -54,7 +57,7 @@
           <p>Organization description is here. Here is describe for organization's purpose.</p>
         </div>
         <div class="w-100 ps-1 pe-1 pb-1">
-          <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
+          <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;"> @* Add actions for onclicked *@
             <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
               <i class="bi bi-hammer ps-1 pe-1"></i>
               <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Guidelines</p>
@@ -66,7 +69,7 @@
               <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Members</p>
             </div>
           </div>
-          <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
+          <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;" @onclick="async (e) => await OrgSettingsModalRef!.Show()">
             <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
               <i class="bi bi-gear-fill ps-1 pe-1"></i>
               <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Settings</p>
