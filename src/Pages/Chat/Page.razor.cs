@@ -88,6 +88,10 @@ public partial class Page : ComponentBase {
             await LocalStorageProvider.SetOrganizationsAsync(orgs);
 
             // Register Events
+            ApiClient.EventHub.GetObservable<ClientEvents.OnSessionRefreshed>().Subscribe(async (evt) => {
+                Logger.LogInformation("GrpcClientFeeder received OnSessionRefreshed event");
+                await LocalStorageProvider.SetSessionDataAsync(evt.Session);
+            });
             ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationInfoCreated>().Subscribe(async (evt) => {
                 Logger.LogInformation("Received OnOrganizationCreated event for Org ID: {OrgId}", evt.Organization.OrganizationId);
 
@@ -106,6 +110,8 @@ public partial class Page : ComponentBase {
                 UserId = sessionData?.AccountId ?? string.Empty,
                 SessionId = sessionData?.SessionId ?? string.Empty
             });
+            // Start session renewal
+            await ApiClient.SessionManager.AutoRefreshSessionAsync();
         }
     }
 
