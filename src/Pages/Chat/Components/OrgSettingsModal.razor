@@ -6,9 +6,18 @@
     </button>
 
     <div class="h-100 d-flex flex-column" style="width: 250px; border-right: 1px solid #ccc;">
-      <h4 style="height: 45px; border-bottom: 1px solid #ccc;">Settings</h4>
-      <div class="d-flex flex-row align-items-center" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.General)">
-        <h5>General</h5>
+      <h4 class="w-100 d-flex flex-row align-items-center justify-content-center" style="height: 45px; border-bottom: 1px solid #ccc; font-weight: bold;">組織の設定</h4>
+      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.General)">
+        <h5>一般</h5>
+      </div>
+      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.Roles)">
+        <h5>役割・権限</h5>
+      </div>
+      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.Chats)">
+        <h5>チャット</h5>
+      </div>
+      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.Others)">
+        <h5>その他</h5>
       </div>
     </div>
     <div class="h-100 flex-grow-1 d-flex flex-column">

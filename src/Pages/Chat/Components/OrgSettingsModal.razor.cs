@@ -8,6 +8,9 @@ namespace Pocco.Client.Web.Pages.Chat.Components;
 public partial class OrgSettingsModal : ComponentBase {
     public enum OrgSettingsMode {
         General,
+        Roles,
+        Chats,
+        Others,
     }
 
     [Parameter] public Page ParentPage { get; set; } = null!;
