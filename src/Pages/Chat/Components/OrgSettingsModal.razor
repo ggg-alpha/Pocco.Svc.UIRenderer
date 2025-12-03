@@ -24,7 +24,7 @@
       @if (_orgSettingsMode is OrgSettingsMode.General)
       {
         <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
-          <h4>General Settings</h4>
+          <h4>一般設定</h4>
           <div class="mt-4 p-3 bg-light d-flex flex-column align-items-start justify-content-start" style="border: 1px solid #ccc; border-radius: 5px;">
             <div class="pt-2" id="uploadForm" novalidate>
 
@@ -60,17 +60,29 @@
             </div>
 
             <dvi class="d-flex flex-row align-items-end justify-content-end w-100 mt-3">
-              <button class="btn btn-success" disabled="@(!_canSaveChanges)" @onclick="async (e) => await OnUpdateOrganizationBtnClicked(e)">Save</button>
+              <button class="btn btn-success" disabled="@(!_canSaveChanges)" @onclick="async (e) => await OnUpdateOrganizationBtnClicked(e)">保存</button>
             </dvi>
           </div>
 
           <hr class="my-4" />
 
+          <div class="mt-4 p-3 bg-light d-flex flex-row align-items-center justify-content-between" style="border: 1px solid green; border-radius: 5px;">
+            <div class="text-success" style="font-weight: bold;">
+              所有権を他のメンバーに移管します。
+            </div>
+            <button class="btn btn-success disabled" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">所有権の移管</button>
+          </div>
           <div class="mt-4 p-3 bg-light d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
             <div class="text-danger" style="font-weight: bold;">
-              Confirm to delete this organization.
+              組織から退会します。
             </div>
-            <button class="btn btn-danger" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">Delete organization</button>
+            <button class="btn btn-danger" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">退会</button>
+          </div>
+          <div class="mt-4 p-3 bg-light d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
+            <div class="text-danger" style="font-weight: bold;">
+              組織を削除します。（復元不可）
+            </div>
+            <button class="btn btn-danger" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">削除</button>
           </div>
         </div>
       }
