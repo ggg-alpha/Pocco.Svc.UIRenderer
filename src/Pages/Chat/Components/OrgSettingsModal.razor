@@ -86,6 +86,24 @@
           </div>
         </div>
       }
+      else if (_orgSettingsMode is OrgSettingsMode.Roles)
+      {
+        <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+          <h4>ロール設定</h4>
+        </div>
+      }
+      else if (_orgSettingsMode is OrgSettingsMode.Chats)
+      {
+        <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+          <h4>チャット設定</h4>
+        </div>
+      }
+      else if (_orgSettingsMode is OrgSettingsMode.Others)
+      {
+        <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+          <h4>その他の設定</h4>
+        </div>
+      }
       else
       {
         <p>Unknown</p>
