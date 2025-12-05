@@ -69,3 +69,13 @@ input[type="file"] {
   color: #555;
   margin-top: 8px
 }
+
+.role_item {
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.role_item:hover {
+  background-color: #99999950;
+}
