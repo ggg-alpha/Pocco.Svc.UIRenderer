@@ -12,27 +12,16 @@
       </div>
     </div>
     <div class="w-100 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-scroll" style="min-height: 200px;">
-      <div class="organization_list_item w-100 p-2 mb-2 rounded-2 d-flex flex-row justify-content-start align-items-center hover_effect" style="cursor: pointer; background-color: var(--bs-gray-200);" @onclick="@(async (e) => await OnOrgSwitcherOrgSelectedClicked(e, "org-1"))">
-        <img src="https://placehold.jp/120x120.png" alt="Organization icon" class="rounded-2" style="width: 40px; height: 40px; margin-right: 10px;" />
-        <div>
-          <h5 style="margin: 0; padding: 0;">Organization Name</h5>
-          <p style="margin: 0; padding: 0;">Organization description is here.</p>
+      @foreach (var org in Orgs)
+      {
+        <div class="organization_list_item w-100 p-2 mb-2 rounded-2 d-flex flex-row justify-content-start align-items-center hover_effect" style="cursor: pointer; background-color: var(--bs-gray-200);" @onclick="@(async (e) => await OnOrgSwitcherOrgSelectedClicked(e, org.Id))">
+          <img src="https://placehold.jp/120x120.png" alt="Organization icon" class="rounded-2" style="width: 40px; height: 40px; margin-right: 10px;" />
+          <div>
+            <h5 style="margin: 0; padding: 0;">@org.Name</h5>
+            <p style="margin: 0; padding: 0;">@org.Description</p>
+          </div>
         </div>
-      </div>
-      <div class="organization_list_item w-100 p-2 mb-2 rounded-2 d-flex flex-row justify-content-start align-items-center hover_effect" style="cursor: pointer; background-color: var(--bs-gray-200);">
-        <img src="https://placehold.jp/120x120.png" alt="Organization icon" class="rounded-2" style="width: 40px; height: 40px; margin-right: 10px;" />
-        <div>
-          <h5 style="margin: 0; padding: 0;">Organization Name</h5>
-          <p style="margin: 0; padding: 0;">Organization description is here.</p>
-        </div>
-      </div>
-      <div class="organization_list_item w-100 p-2 mb-2 rounded-2 d-flex flex-row justify-content-start align-items-center hover_effect" style="cursor: pointer; background-color: var(--bs-gray-200);">
-        <img src="https://placehold.jp/120x120.png" alt="Organization icon" class="rounded-2" style="width: 40px; height: 40px; margin-right: 10px;" />
-        <div>
-          <h5 style="margin: 0; padding: 0;">Organization Name</h5>
-          <p style="margin: 0; padding: 0;">Organization description is here.</p>
-        </div>
-      </div>
+      }
     </div>
   </div>
 </div>
