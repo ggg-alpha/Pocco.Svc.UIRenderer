@@ -31,21 +31,21 @@ public partial class OrgSettingsModal : ComponentBase {
     }
 
     protected override async Task OnParametersSetAsync() {
-        if (ParentPage.ApiClient is not null && !string.IsNullOrWhiteSpace(ParentPage.OrgId)) {
-            try {
-                var orgInfo = await ParentPage.ApiClient.GetOrganizationAsync(new V0BaseRequest {
-                    Id = ParentPage.OrgId,
-                });
+        // if (ParentPage.ApiClient is not null && !string.IsNullOrWhiteSpace(ParentPage.OrgId)) {
+        //     try {
+        //         var orgInfo = await ParentPage.ApiClient.GetOrganizationAsync(new V0BaseRequest {
+        //             Id = ParentPage.OrgId,
+        //         });
 
-                _currentOrgName = orgInfo.Name;
-                _currentOrgDescription = orgInfo.Description;
+        //         _currentOrgName = orgInfo.Name;
+        //         _currentOrgDescription = orgInfo.Description;
 
-                OrganizationName = _currentOrgName;
-                OrganizationDescription = _currentOrgDescription;
-            } catch (Exception ex) {
-                ParentPage.Logger.LogError(ex, "Failed to fetch organization info for Org ID: {OrgId}", ParentPage.OrgId);
-            }
-        }
+        //         OrganizationName = _currentOrgName;
+        //         OrganizationDescription = _currentOrgDescription;
+        //     } catch (Exception ex) {
+        //         ParentPage.Logger.LogError(ex, "Failed to fetch organization info for Org ID: {OrgId}", ParentPage.OrgId);
+        //     }
+        // }
 
         await base.OnParametersSetAsync();
     }
@@ -66,6 +66,28 @@ public partial class OrgSettingsModal : ComponentBase {
 
         _orgSettingsMode = mode;
         await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task GetOrganizationInfo() {
+        if (ParentPage.ApiClient is not null && !string.IsNullOrWhiteSpace(ParentPage.OrgId)) {
+            try {
+                var orgInfo = await ParentPage.ApiClient.GetOrganizationAsync(new V0BaseRequest {
+                    Id = ParentPage.OrgId,
+                });
+
+                _currentOrgName = orgInfo.Name;
+                _currentOrgDescription = orgInfo.Description;
+
+                OrganizationName = _currentOrgName;
+                OrganizationDescription = _currentOrgDescription;
+
+                ParentPage.Logger.LogInformation("Fetched organization info for Org ID: {OrgId}, Name: {OrgName}", ParentPage.OrgId, OrganizationName);
+            } catch (Exception ex) {
+                ParentPage.Logger.LogError(ex, "Failed to fetch organization info for Org ID: {OrgId}", ParentPage.OrgId);
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task OnUpdateOrganizationBtnClicked(MouseEventArgs e) {

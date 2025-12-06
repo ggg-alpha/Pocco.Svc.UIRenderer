@@ -36,7 +36,7 @@ public partial class Page : ComponentBase {
         if (firstRender) {
             if (string.IsNullOrWhiteSpace(OrgId)) {
                 Logger.LogInformation("No organization ID provided in URL. Redirecting to direct messages page.");
-                NavigationManager.NavigateTo("/chat/direct-messages"); // TODO: ダイレクトメッセージページ（別コンポーネント）に変更
+                NavigationManager.NavigateTo("/chat/direct-messages");
                 return;
             }
 
@@ -106,12 +106,22 @@ public partial class Page : ComponentBase {
             });
 
             // Start listening to events
-            await ApiClient.EventListener.StartListeningAsync(new ListenRequest {
+            _ = Task.Run(async () => await ApiClient.EventListener.StartListeningAsync(new ListenRequest {
                 UserId = sessionData?.AccountId ?? string.Empty,
                 SessionId = sessionData?.SessionId ?? string.Empty
-            });
+            }));
             // Start session renewal
-            await ApiClient.SessionManager.AutoRefreshSessionAsync();
+            _ = Task.Run(async () => await ApiClient.SessionManager.AutoRefreshSessionAsync());
+
+            // Load organization info
+            if (OrgSettingsModalRef is not null) {
+                await OrgSettingsModalRef.GetOrganizationInfo();
+            } else {
+                Logger.LogWarning("OrgSettingsModalRef is null; cannot load organization info.");
+            }
+
+            // State change call
+            await InvokeAsync(StateHasChanged);
         }
     }
 
