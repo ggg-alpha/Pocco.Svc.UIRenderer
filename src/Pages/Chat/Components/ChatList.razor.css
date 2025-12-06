@@ -1,0 +1,43 @@
+.channel_item_wrapper:hover {
+  background-color: #b4b4b470;
+}
+
+.category_header {
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-bottom: 4px;
+}
+
+.category_header:hover {
+  color: #303030;
+  opacity: 0.8;
+}
+
+.category_header_add-btn {
+  display: none;
+  margin-left: auto;
+  cursor: crosshair;
+  color: black;
+}
+
+.category_header:hover>.category_header_add-btn {
+  display: block;
+}
+
+.category_arrow {
+  margin-right: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.category_arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+.category_arrow.expanded {
+  transform: rotate(0deg);
+}
+
+.channel_item_wrapper.active {
+  background-color: #b4b4b470;
+  color: white;
+}
