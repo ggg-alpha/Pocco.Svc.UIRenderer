@@ -55,10 +55,12 @@ public partial class Page : ComponentBase {
                     if (result is false) {
                         Logger.LogWarning("Session verification failed. Redirecting to login page.");
                         NavigationManager.NavigateTo("/login");
+                        return;
                     }
                 } catch (Exception ex) {
                     Logger.LogError(ex, "Failed to verify session data.");
                     NavigationManager.NavigateTo("/login");
+                    return;
                 }
             } else {
                 Logger.LogWarning("No session data found in local storage. Staying on login page.");
