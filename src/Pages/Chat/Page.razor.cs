@@ -17,6 +17,7 @@ public partial class Page : ComponentBase {
     public Components.OrgJoinModal? OrgJoinModalRef;
     public Components.OrgCreateModal? OrgCreateModalRef;
     public Components.OrgSettingsModal? OrgSettingsModalRef;
+    public Components.ChatList? ChatListRef;
 
     private bool _expandCategory = true;
 

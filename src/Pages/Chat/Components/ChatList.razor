@@ -1,31 +1,37 @@
 <div class="w-100 d-flex flex-column justify-content-start align-items-center gap-1 overflow-scroll" style="height: 0; flex-grow: 1;">
-  <div class="channel_item_wrapper rounded-2" style="width: 95%; cursor: pointer;">
-    <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
-      <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
-      <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
-    </div>
-  </div>
-  <div class="category_wrapper rounded-2" style="width: 95%; cursor: pointer;">
-    <div class="category d-flex flex-column justify-content-start align-items-start">
-      <div class="category_header d-flex flex-row justify-content-start align-items-center w-100" @onclick="async (e) => await OnChatCategoryToggled(e)"> @* On Click target*@
-        <i class="category_arrow bi bi-caret-down-fill @(_expandCategory == true ? "expanded" : "collapsed")"></i>
-        <div class="flex-grow-1 text-truncate">Category nameeeeeeeeeeeeeeeeeeeeeeeeee</div>
-        <i class="category_header_add-btn bi bi-plus"></i>
-      </div>
-      <div class="category_items_wrapper ps-1 flex-column justify-content-start align-items-center w-100" style="display: @(_expandCategory == true ? "flex" : "none");">
-        <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
-          <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
-            <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
-            <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
+  @foreach (var item in Chats)
+  {
+    @if (item.IsCategory)
+    {
+      <div class="category_wrapper rounded-2" style="width: 95%; cursor: pointer;">
+        <div class="category d-flex flex-column justify-content-start align-items-start">
+          <div class="category_header d-flex flex-row justify-content-start align-items-center w-100">
+            <i class=" category_arrow bi bi-caret-down-fill"></i>
+            <div class="flex-grow-1 text-truncate">@item.Name</div>
+            <i class="category_header_add-btn bi bi-plus"></i>
           </div>
-        </div>
-        <div class="channel_item_wrapper rounded-2 active" style="width: 100%; cursor: pointer;">
-          <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
-            <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
-            <p class="flex-grow-1" style="font-weight: 500; margin: 0;">Channel name</p>
+          <div class="category_items_wrapper ps-1 flex-column justify-content-start align-items-center w-100" style="">
+            @foreach (var subChat in item.SubChats)
+            {
+              <div class="channel_item_wrapper rounded-2" style="width: 100%; cursor: pointer;">
+                <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+                  <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+                  <p class="flex-grow-1" style="font-weight: 500; margin: 0;">@subChat.Name</p>
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    }
+    else
+    {
+      <div class="channel_item_wrapper rounded-2" style="width: 95%; cursor: pointer;">
+        <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+          <img src="https://placehold.jp/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+          <p class="flex-grow-1" style="font-weight: 500; margin: 0;">@item.Name</p>
+        </div>
+      </div>
+    }
+  }
 </div>
