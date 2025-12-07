@@ -17,6 +17,8 @@ public partial class Page : ComponentBase {
     public Components.OrgJoinModal? OrgJoinModalRef;
     public Components.OrgCreateModal? OrgCreateModalRef;
     public Components.OrgSettingsModal? OrgSettingsModalRef;
+
+    public Components.OrgInfoCenter? OrgInfoCenterRef;
     public Components.ChatList? ChatListRef;
 
     private bool _expandCategory = true;
@@ -117,6 +119,11 @@ public partial class Page : ComponentBase {
             _ = Task.Run(async () => await ApiClient.SessionManager.AutoRefreshSessionAsync());
 
             // Load organization info
+            if (OrgInfoCenterRef is not null) {
+                await OrgInfoCenterRef.GetOrganizationInfo();
+            } else {
+                Logger.LogWarning("OrgInfoCenterRef is null; cannot load organization info.");
+            }
             if (OrgSettingsModalRef is not null) {
                 await OrgSettingsModalRef.GetOrganizationInfo();
             } else {
