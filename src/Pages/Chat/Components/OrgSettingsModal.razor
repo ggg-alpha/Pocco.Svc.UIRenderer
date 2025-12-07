@@ -1,22 +1,22 @@
 <div class="w-100 h-100 flex-column justify-content-center align-items-center position-absolute ps-1 pe-1" style="top: 0; left: 0; z-index: 500; display: @(_hideModal == true ? "none" : "flex"); background-color: #96909070;" @onclick="async (e) => await Hide(e)">
-  <div class="w-100 d-flex flex-row justify-content-center align-items-start bg-white rounded-3 position-relative" style="max-width: 80%; height: 800px; z-index: 501;" @onclick:stopPropagation="true">
+  <div class="w-100 d-flex flex-row justify-content-center align-items-start rounded-3 position-relative p-1" style="max-width: 80%; height: 800px; z-index: 501; background: var(--color_teal);" @onclick:stopPropagation="true">
 
-    <button class="btn btn-light position-absolute top-0 end-0 m-2" style="z-index: 502;" title="Close" @onclick="async (e) => await Hide(e)">
+    <button class="btn position-absolute top-0 end-0 m-2" style="z-index: 502;" title="Close" @onclick="async (e) => await Hide(e)">
       <i class="bi bi-x-lg"></i>
     </button>
 
-    <div class="h-100 d-flex flex-column" style="width: 250px; border-right: 1px solid #ccc;">
-      <h4 class="w-100 d-flex flex-row align-items-center justify-content-center" style="height: 45px; border-bottom: 1px solid #ccc; font-weight: bold;">組織の設定</h4>
-      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.General)">
+    <div class="h-100 d-flex flex-column p-1" style="width: 250px; border-right: 1px solid var(--bs-gray-600);">
+      <h4 class="w-100 d-flex flex-row align-items-center justify-content-center mb-2" style="height: 45px; border-bottom: 1px solid var(--bs-gray-600); font-weight: bold;">組織の設定</h4>
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.General)">
         <h5>一般</h5>
       </div>
-      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.Roles)">
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.Roles)">
         <h5>役割・権限</h5>
       </div>
-      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.Chats)">
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.Chats)">
         <h5>チャット</h5>
       </div>
-      <div class="w-100 d-flex flex-row align-items-center justify-content-end pe-4" style="height: 30px; border-bottom: 1px solid #ccc; margin-bottom: 10px; cursor: pointer;" @onclick="async () => await ChangeMode(OrgSettingsMode.Others)">
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.Others)">
         <h5>その他</h5>
       </div>
     </div>
@@ -25,7 +25,7 @@
       {
         <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
           <h4>一般設定</h4>
-          <div class="mt-4 p-3 bg-light d-flex flex-column align-items-start justify-content-start" style="border: 1px solid #ccc; border-radius: 5px;">
+          <div class="mt-4 p-3  d-flex flex-column align-items-start justify-content-start" style="border: 1px solid #ccc; border-radius: 5px;">
             <div class="pt-2" id="uploadForm" novalidate>
 
               <div class="field">
@@ -66,19 +66,19 @@
 
           <hr class="my-4" />
 
-          <div class="mt-4 p-3 bg-light d-flex flex-row align-items-center justify-content-between" style="border: 1px solid green; border-radius: 5px;">
-            <div class="text-success" style="font-weight: bold;">
+          <div class="mt-4 p-3  d-flex flex-row align-items-center justify-content-between" style="border: 1px solid var(--color_mint); border-radius: 5px;">
+            <div style="font-weight: bold; color: var(--color_mint);">
               所有権を他のメンバーに移管します。
             </div>
             <button class="btn btn-success disabled" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">所有権の移管</button>
           </div>
-          <div class="mt-4 p-3 bg-light d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
+          <div class="mt-4 p-3  d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
             <div class="text-danger" style="font-weight: bold;">
               組織から退会します。
             </div>
             <button class="btn btn-danger" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">退会</button>
           </div>
-          <div class="mt-4 p-3 bg-light d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
+          <div class="mt-4 p-3  d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
             <div class="text-danger" style="font-weight: bold;">
               組織を削除します。（復元不可）
             </div>

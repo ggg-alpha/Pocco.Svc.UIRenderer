@@ -1,3 +1,8 @@
-.channel_item_wrapper:hover {
-  background-color: #b4b4b470;
+.action_item_wrapper {
+  width: 100%;
+  cursor: pointer;
+}
+
+.action_item_wrapper:hover {
+  background-color: #e0e0e070;
 }

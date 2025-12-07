@@ -1,23 +1,18 @@
-.channel_item_wrapper:hover {
-  background-color: #b4b4b470;
-}
-
 .category_header {
   font-weight: 700;
   font-size: 1.1em;
   margin-bottom: 4px;
+  opacity: 0.7;
 }
 
 .category_header:hover {
-  color: #303030;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .category_header_add-btn {
   display: none;
   margin-left: auto;
   cursor: crosshair;
-  color: black;
 }
 
 .category_header:hover>.category_header_add-btn {
@@ -35,6 +30,10 @@
 
 .category_arrow.expanded {
   transform: rotate(0deg);
+}
+
+.channel_item_wrapper:hover {
+  background-color: #b4b4b470;
 }
 
 .channel_item_wrapper.active {
