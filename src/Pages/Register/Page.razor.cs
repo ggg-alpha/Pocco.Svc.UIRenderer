@@ -29,7 +29,7 @@ partial class Page : ComponentBase {
             if (sessionData is not null) {
                 Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
                 await ApiClient.SessionManager.VerifySessionAsync(sessionData);
-                NavigationManager.NavigateTo("/apps/v2/chat");
+                NavigationManager.NavigateTo("/chat/direct-messages");
             } else {
                 Logger.LogWarning("No session data found in local storage. Staying on login page.");
             }
