@@ -19,23 +19,7 @@ public partial class OrgSelectModal : ComponentBase {
     [Parameter] public APIClient.Core.APIClient ApiClient { get; set; } = null!;
 
     // TODO: パラメータ化する
-    public List<OrgInfo> Orgs { get; set; } = new List<OrgInfo> {
-        new OrgInfo {
-            Id = "org-1",
-            Name = "Organization One",
-            Description = "This is the first organization.",
-        },
-        new OrgInfo {
-            Id = "org-2",
-            Name = "Organization Two",
-            Description = "This is the second organization.",
-        },
-        new OrgInfo {
-            Id = "org-3",
-            Name = "Organization Three",
-            Description = "This is the third organization.",
-        },
-    };
+    public List<OrgInfo> Orgs { get; set; } = new List<OrgInfo>();
 
     public bool _hideModal { get; set; } = true;
 
@@ -48,12 +32,21 @@ public partial class OrgSelectModal : ComponentBase {
         await Task.CompletedTask;
     }
 
+    public async Task SetOrganizationsAsync(List<OrgInfo> orgs) {
+        Orgs = orgs;
+        await InvokeAsync(StateHasChanged);
+    }
+
     public async Task Show(MouseEventArgs e) {
         _hideModal = false;
         await InvokeAsync(StateHasChanged);
     }
     private async Task OnOrgSwitcherOrgSelectedClicked(MouseEventArgs e, string orgId) {
-        NavigationManager.NavigateTo($"/chat/{orgId}");
+        Console.WriteLine("Clicked!!");
+        _hideModal = true;
+        await InvokeAsync(StateHasChanged);
+
+        NavigationManager.NavigateTo($"/chat/{orgId}", forceLoad: true);
 
         await Task.CompletedTask;
     }

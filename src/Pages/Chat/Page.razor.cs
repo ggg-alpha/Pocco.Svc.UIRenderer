@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Pocco.APIClient.Core;
+using Pocco.Client.Web.Pages.Chat.Components;
 using Pocco.Client.Web.Services;
 using Pocco.Libs.Protobufs.CoreAPI.Services;
 
@@ -118,6 +119,18 @@ public partial class Page : ComponentBase {
             // Start session renewal
             _ = Task.Run(async () => await ApiClient.SessionManager.AutoRefreshSessionAsync());
 
+            // Load component datas
+            if (OrgSelectModalRef is not null) {
+                // Convert to internal data
+                var orgInfos = orgs.Select(item => new OrgInfo {
+                    Id = item.OrganizationId,
+                    Name = item.Name,
+                    Description = item.Description,
+                }).ToList();
+
+                await OrgSelectModalRef.SetOrganizationsAsync(orgInfos);
+            }
+
             // Load organization info
             if (OrgInfoCenterRef is not null) {
                 await OrgInfoCenterRef.GetOrganizationInfo();
@@ -128,6 +141,12 @@ public partial class Page : ComponentBase {
                 await OrgSettingsModalRef.GetOrganizationInfo();
             } else {
                 Logger.LogWarning("OrgSettingsModalRef is null; cannot load organization info.");
+            }
+            // Load chat list for org
+            if (ChatListRef is not null) {
+                await ChatListRef.InitializeAsync();
+            } else {
+                Logger.LogWarning("ChatListRef is null; cannot load chat list.");
             }
 
             // State change call
