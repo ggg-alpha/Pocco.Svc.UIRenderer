@@ -9,18 +9,25 @@
   @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> *@
   @* <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> *@
   @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script> *@
-  <link rel="stylesheet" href=@Assets["lib/bootstrap/dist/css/bootstrap.min.css"] />
-  <link rel="stylesheet" href=@Assets["lib/bootstrap-icons/bootstrap-icons.css"] />
+  @* <link rel="stylesheet" href=@Assets["lib/bootstrap/dist/css/bootstrap.min.css"] /> *@
+  @* <link rel="stylesheet" href=@Assets["lib/bootstrap-icons/bootstrap-icons.css"] /> *@
   <link rel="stylesheet" href=@Assets["app.css"] />
   <link rel="stylesheet" href="Pocco.Client.Web.styles.css" />
-  <link rel="icon" type="image/png" href=@Assets["/assets/logos/pocco-icon.png"] />
+  @* <link rel="icon" type="image/png" href=@Assets["/assets/logos/pocco-icon.png"] /> *@
+
+  <link rel="stylesheet" href="http://localhost:5197/sys-content/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://localhost:5197/sys-content/bootstrap-icons/bootstrap-icons.css">
+
+  <link rel="icon" type="image/png" href="http://localhost:5197/sys-content/logos/pocco-icon.png">
+
   <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
   <Routes @rendermode="InteractiveServer" />
 
-  <script src="@Assets["/lib/bootstrap/dist/js/bootstrap.bundle.js"]"></script>
+  @* <script src="@Assets["/lib/bootstrap/dist/js/bootstrap.bundle.js"]"></script> *@
+  <script src="http://localhost:5197/sys-content/bootstrap/dist/js/bootstrap.bundle.js"></script>
   <script src="_framework/blazor.web.js"></script>
   <script src="@Assets["/js/LocalStorageHelper.js"]"></script>
 </body>
