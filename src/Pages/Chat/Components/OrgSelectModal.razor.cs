@@ -46,7 +46,7 @@ public partial class OrgSelectModal : ComponentBase {
         _hideModal = true;
         await InvokeAsync(StateHasChanged);
 
-        NavigationManager.NavigateTo($"/chat/{orgId}", forceLoad: true);
+        NavigationManager.NavigateTo($"/orgs/{orgId}", forceLoad: true);
 
         await Task.CompletedTask;
     }
@@ -66,8 +66,10 @@ public partial class OrgSelectModal : ComponentBase {
         }
     }
     private async Task OnOrgCreateClicked(MouseEventArgs e) {
-        if (ParentPageRef.OrgCreateModalRef is not null) {
-            await ParentPageRef.OrgCreateModalRef.Show(e);
-        }
+        // if (ParentPageRef.OrgCreateModalRef is not null) {
+        //     await ParentPageRef.OrgCreateModalRef.Show(e);
+        // }
+
+        NavigationManager.NavigateTo("/orgs/new", forceLoad: true);
     }
 }

@@ -28,10 +28,19 @@ partial class Page : ComponentBase {
             var sessionData = await LocalStorageProvider.GetSessionDataAsync();
             if (sessionData is not null) {
                 Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
-                await ApiClient.SessionManager.VerifySessionAsync(sessionData);
-                NavigationManager.NavigateTo("/chat/direct-messages");
+                try {
+                    var verified = await ApiClient.SessionManager.VerifySessionAsync(sessionData);
+
+                    if (verified) {
+                        NavigationManager.NavigateTo("/chat/direct-messages");
+                    } else {
+                        await LocalStorageProvider.ClearSessionDataAsync();
+                    }
+                } catch {
+                    await LocalStorageProvider.ClearSessionDataAsync();
+                }
             } else {
-                Logger.LogWarning("No session data found in local storage. Staying on login page.");
+                Logger.LogWarning("No session data found in local storage. Staying on register page.");
             }
 
             Console.WriteLine("Chat Page Rendered");

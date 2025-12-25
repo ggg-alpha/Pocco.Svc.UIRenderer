@@ -1,49 +1,33 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Pocco.APIClient.Core;
-using Pocco.Client.Web.Pages.Chat.Components;
 using Pocco.Client.Web.Services;
 using Pocco.Libs.Protobufs.CoreAPI.Services;
 
-namespace Pocco.Client.Web.Pages.Chat;
+namespace Pocco.Client.Web.Pages.CreateOrg;
 
 public partial class Page : ComponentBase {
-    [Parameter] public string? OrgId { get; set; } = string.Empty;
-
+    [Inject] public APIClient.Core.APIClient ApiClient { get; set; } = null!;
     [Inject] public ILogger<Page> Logger { get; set; } = null!;
     [Inject] public NavigationManager NavigationManager { get; set; } = null!;
     [Inject] public ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
-    [Inject] public APIClient.Core.APIClient ApiClient { get; set; } = null!;
-    public Components.OrgSelectModal? OrgSelectModalRef;
-    public Components.OrgJoinModal? OrgJoinModalRef;
-    public Components.OrgCreateModal? OrgCreateModalRef;
-    public Components.OrgSettingsModal? OrgSettingsModalRef;
 
-    public Components.OrgInfoCenter? OrgInfoCenterRef;
-    public Components.ChatList? ChatListRef;
+    private const string OrgNameLengthErrorMessage = "組織名は30文字以内で入力してください。";
+    private const string OrgDescOverMaxLengthErrorMessage = "組織説明は200文字以内で入力してください。";
+    private string _orgName = string.Empty;
+    private string _orgDesc = string.Empty;
+    private bool _orgNameInvalid = false;
+    private bool _orgDescInvalid = false;
+    private bool _canSubmit => !_orgNameInvalid && !_orgDescInvalid;
+    private string _orgNameErrorMessage = string.Empty;
+    private string _orgDescErrorMessage = string.Empty;
 
-    private bool _expandCategory = true;
 
     protected override async Task OnInitializedAsync() {
-        Logger.LogInformation("Chat Page Initialized with OrgId: {OrgId}", OrgId);
-
         await Task.CompletedTask;
     }
-
-    protected override async Task OnParametersSetAsync() {
-        Logger.LogInformation("Chat Page Parameters Set. Current OrgId: {OrgId}", OrgId);
-
-        await Task.CompletedTask;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
-            if (string.IsNullOrWhiteSpace(OrgId)) {
-                Logger.LogInformation("No organization ID provided in URL. Redirecting to direct messages page.");
-                NavigationManager.NavigateTo("/chat/direct-messages");
-                return;
-            }
-
             ApiClient.EventHub.GetObservable<ClientEvents.OnClientLoggedIn>().Subscribe(async (evt) => {
                 Logger.LogInformation("GrpcClientFeeder received OnClientLoggedIn event");
                 await LocalStorageProvider.SetSessionDataAsync(evt.Session);
@@ -104,12 +88,6 @@ public partial class Page : ComponentBase {
                 // Navigate to the newly created organization's chat page
                 await InvokeAsync(() => NavigationManager.NavigateTo($"/orgs/{evt.Organization.OrganizationId}", forceLoad: true));
             });
-            ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationInfoDeleted>().Subscribe(async (evt) => {
-                Logger.LogInformation("Received OnOrganizationInfoDeleted event for Org ID: {OrgId}", evt.OrganizationId);
-
-                // Navigate to the newly created organization's chat page
-                await InvokeAsync(() => NavigationManager.NavigateTo($"/chat/direct-messages", forceLoad: false));
-            });
 
             // Start listening to events
             _ = Task.Run(async () => await ApiClient.EventListener.StartListeningAsync(new ListenRequest {
@@ -119,44 +97,66 @@ public partial class Page : ComponentBase {
             // Start session renewal
             _ = Task.Run(async () => await ApiClient.SessionManager.AutoRefreshSessionAsync());
 
-            // Load component datas
-            if (OrgSelectModalRef is not null) {
-                // Convert to internal data
-                var orgInfos = orgs.Select(item => new OrgInfo {
-                    Id = item.OrganizationId,
-                    Name = item.Name,
-                    Description = item.Description,
-                }).ToList();
-
-                await OrgSelectModalRef.SetOrganizationsAsync(orgInfos);
-            }
-
-            // Load organization info
-            if (OrgInfoCenterRef is not null) {
-                await OrgInfoCenterRef.GetOrganizationInfo();
-            } else {
-                Logger.LogWarning("OrgInfoCenterRef is null; cannot load organization info.");
-            }
-            if (OrgSettingsModalRef is not null) {
-                await OrgSettingsModalRef.GetOrganizationInfo();
-            } else {
-                Logger.LogWarning("OrgSettingsModalRef is null; cannot load organization info.");
-            }
-            // Load chat list for org
-            if (ChatListRef is not null) {
-                await ChatListRef.InitializeAsync();
-            } else {
-                Logger.LogWarning("ChatListRef is null; cannot load chat list.");
-            }
-
             // State change call
             await InvokeAsync(StateHasChanged);
         }
     }
 
-    private async Task OnChatCategoryToggled(MouseEventArgs e) {
-        _expandCategory = !_expandCategory;
+    private void OnOrgNameChanged(ChangeEventArgs e) {
+        _orgName = e.Value?.ToString() ?? string.Empty;
+        _orgNameInvalid = string.IsNullOrWhiteSpace(_orgName);
 
-        await InvokeAsync(StateHasChanged);
+        if (_orgNameInvalid) {
+            _orgNameErrorMessage = "組織名は必須項目です。";
+        } else if (_orgName.Length > 30) {
+            _orgNameInvalid = true;
+            _orgNameErrorMessage = OrgNameLengthErrorMessage;
+        } else {
+            _orgNameErrorMessage = string.Empty;
+        }
+
+        StateHasChanged();
+    }
+
+    private void OnOrgDescChanged(ChangeEventArgs e) {
+        _orgDesc = e.Value?.ToString() ?? string.Empty;
+        _orgDescInvalid = _orgDesc.Length > 200;
+
+        if (_orgDescInvalid) {
+            _orgDescErrorMessage = OrgDescOverMaxLengthErrorMessage;
+        } else {
+            _orgDescErrorMessage = string.Empty;
+        }
+        StateHasChanged();
+    }
+
+    private async Task SubmitCreateOrgAsync() {
+        if (!_canSubmit) {
+            Console.WriteLine("Cannot submit due to validation errors.");
+            return;
+        }
+
+        try {
+            var reply = await ApiClient.CreateOrganizationAsync(new V0CreateOrganizationRequest {
+                Base = new V0CreateXRequest {
+                    Name = _orgName
+                },
+                Description = _orgDesc
+            });
+
+            Logger.LogInformation("Organization creation requested with EventId: {EventId}", reply.EventId);
+
+            await InvokeAsync(StateHasChanged);
+
+            // Log the api client is listening now
+            Logger.LogInformation("The ApiClient is now listening these events: {Filter}", ApiClient.EventListener.CurrentListeningEvents);
+        } catch (Exception ex) {
+            _orgNameErrorMessage = "組織名は必須項目です。";
+            _orgDescErrorMessage = "組織説明は必須項目です。";
+
+            Logger.LogError(ex, "Failed to create organization.");
+        }
+
+        await Task.CompletedTask;
     }
 }
