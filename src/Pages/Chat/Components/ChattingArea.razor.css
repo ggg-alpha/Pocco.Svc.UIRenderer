@@ -1,0 +1,80 @@
+.chat_area {
+
+  .input_box {
+    /* height: 40px; */
+    margin: 4px;
+    padding: 4px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+
+    #input_box_file {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* アイコンだけを表示するラベルの見た目調整 */
+    .input_box_file_label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      border-radius: 6px;
+      /* border: 1px solid #ddd; */
+      font-size: 22px;
+      /* アイコンサイズ */
+    }
+
+    .input_box_file_label:hover {
+      transform: scale(1.05);
+    }
+
+    textarea,
+    .input_box_text {
+      width: 100%;
+      height: 30px;
+      padding: 2px 2px 0 2px;
+
+      border: 1px solid transparent;
+      border-radius: 5px;
+      resize: none;
+
+      background-color: transparent;
+      color: white;
+      font-size: 15px;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .input_box_send {
+      cursor: pointer;
+      border-left: 1px solid #bbb;
+      border-radius: 0 5px 5px 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0 0 2px;
+
+      i {
+        transform: rotateZ(45deg);
+
+        &:hover {
+          transform: rotateZ(45deg) scale(1.05);
+          color: aqua;
+        }
+      }
+    }
+  }
+}

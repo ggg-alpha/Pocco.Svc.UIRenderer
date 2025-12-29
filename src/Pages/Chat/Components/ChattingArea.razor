@@ -1,14 +1,16 @@
-<div class="p-1 w-100 h-100 d-flex flex-column justify-content-end align-items-start gap-1 overflow-scroll">
+<div class="chat_area w-100 h-100 d-flex flex-column">
+  <div class="p-1 w-100 d-flex flex-grow-1 flex-column justify-content-end align-items-start gap-1 overflow-scroll" id="chat_holder"></div>
 
-  <div class="w-100 d-flex flex-row justify-content-start align-items-start gap-1">
-    <img src="http://localhost:5197/sys-content/images/120x120.png" alt="User icon" style="width: 45px; height: auto; border-radius: 50%;" />
-    <div>
-      <div class="d-flex flex-row gap-2 justify-content-start align-items-end" style="color: rgb(228, 228, 228);">
-        <h4>Username</h4>
-        <p>2026/01/03 12:00:00</p>
+  <div class="input_box p-2">
+    <div class="d-flex flex-row justify-content-start align-items-center gap-1">
+      <label class="input_box_file_label" for="input_box_file" aria-label="画像を選択">
+        <i class="bi bi-image" style="font-size: large;" aria-hidden="true"></i>
+      </label>
+      <input type="file" id="input_box_file" accept="image/*, video/*, audio/*" />
+      <textarea id="input_box_text" class="input_box_text flex-grow-1" placeholder="メッセージを入力してください" @bind="_input" @bind:event="oninput" @onkeypress="OnMessageInputChanged"></textarea>
+      <div class="input_box_send">
+        <i class="bi bi-send" style="font-size: large;"></i>
       </div>
-      <div id="1"></div>
     </div>
   </div>
-
 </div>

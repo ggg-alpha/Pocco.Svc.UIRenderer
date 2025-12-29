@@ -26,6 +26,8 @@ public partial class OrgInfoCenter : ComponentBase {
                 _orgName = orgInfo.Name;
                 _orgDescription = orgInfo.Description;
 
+                ParentPage.CurrentOrgName = _orgName;
+
                 ParentPage.Logger.LogInformation("Fetched organization info for Org ID: {OrgId}, Name: {OrgName}", ParentPage.OrgId, _orgName);
             } catch (Exception ex) {
                 ParentPage.Logger.LogError(ex, "Failed to fetch organization info for Org ID: {OrgId}", ParentPage.OrgId);

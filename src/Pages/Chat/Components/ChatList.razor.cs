@@ -44,6 +44,8 @@ public class ChatModel {
 public partial class ChatList : ComponentBase {
     [Parameter] public Page ParentPage { get; set; } = null!;
     public List<ChatModel> Chats { get; set; } = [];
+    public string CurrentChatId { get; set; } = string.Empty;
+
     private bool _expandCategory = true;
 
     protected override async Task OnInitializedAsync() {
@@ -78,6 +80,13 @@ public partial class ChatList : ComponentBase {
         }
 
         Chats = chatList;
+        CurrentChatId = Chats.FirstOrDefault()?.Id ?? string.Empty;
+
+        Chats.First().IsActive = true;
+
+        ParentPage.Logger.LogInformation("Fetched chat list for Org ID: {OrgId}", ParentPage.OrgId);
+        ParentPage.Logger.LogInformation("Current chat ID: {ChatId}", CurrentChatId);
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -96,6 +105,9 @@ public partial class ChatList : ComponentBase {
         var selectedChat = Chats.FirstOrDefault(c => c.Id == id);
         if (selectedChat != null) {
             selectedChat.IsActive = true;
+            CurrentChatId = id;
+
+            ParentPage.Logger.LogInformation("Selected chat: {ChatId}", id);
         }
 
         await InvokeAsync(StateHasChanged);
