@@ -1,5 +1,14 @@
 const mdIt = window.markdownit();
 
+function scrollToBottom() {
+  try {
+    const messageHolderEl = document.getElementById('message_holder_wrapper');
+    messageHolderEl.scrollTop = messageHolderEl.scrollHeight;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 function markdownStringToHtml(content, id) {
   const el = document.getElementById(id);
   el.innerHTML = mdIt.render(content);
@@ -25,9 +34,12 @@ function createMessage(id, username, content, createdAt) {
 
   const messageContentEl = document.getElementById(`${id}-content`);
   window.MessageContentHelper.markdownStringToHtml(content, messageContentEl.id);
+
+  window.MessageContentHelper.scrollToBottom();
 }
 
 window.MessageContentHelper = {
+  scrollToBottom,
   markdownStringToHtml,
   createMessage
 }

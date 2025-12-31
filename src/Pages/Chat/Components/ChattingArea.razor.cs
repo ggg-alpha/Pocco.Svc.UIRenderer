@@ -13,8 +13,6 @@ public partial class ChattingArea : ComponentBase {
     [Inject] public ILogger<ChattingArea> Logger { get; set; } = null!;
     [Inject] public IJSRuntime JSRuntime { get; set; } = null!;
 
-    private string content = $"# Test\\nNew line\\n```cs\\nConsole.WriteLine(\"Hello World!\");\\n```\\n";
-
     protected override async Task OnInitializedAsync() {
         ParentPage.ChattingAreaRef = this;
 
@@ -43,9 +41,15 @@ public partial class ChattingArea : ComponentBase {
                         $"{message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}"
                     );
                 }
+
+                await InvokeAsync(StateHasChanged);
+
+                await JSRuntime.InvokeVoidAsync("window.MessageContentHelper.scrollToBottom");
             } catch {
                 Logger.LogError("Error handling while executing MessageContentHelper.markdownStringToHtml");
             }
+
+            await InvokeAsync(StateHasChanged);
         }
 
         await base.OnAfterRenderAsync(firstRender);
@@ -73,6 +77,8 @@ public partial class ChattingArea : ComponentBase {
                 });
 
                 Logger.LogInformation("Message sent successfully, with event {EventId}", response.EventId);
+                _input = string.Empty;
+                await InvokeAsync(StateHasChanged);
             } catch {
                 //
             }
