@@ -15,6 +15,10 @@
   padding: 20px;
 }
 
+.login-wrapper .login-title {
+  color: #000;
+}
+
 .login-wrapper .login-header {
   display: flex;
   flex-direction: column;
