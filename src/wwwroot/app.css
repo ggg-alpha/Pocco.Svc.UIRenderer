@@ -10,7 +10,6 @@ body {
 
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color: var(--bs-body-color);
-  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
