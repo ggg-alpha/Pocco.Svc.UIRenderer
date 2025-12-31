@@ -22,8 +22,8 @@ public partial class OrgSettingsModal : ComponentBase {
     private string OrganizationName { get; set; } = string.Empty;
     private string OrganizationDescription { get; set; } = string.Empty;
 
-    private List<CoreAPI_Service.Role> Roles { get; set; } = new List<CoreAPI_Service.Role>();
-    private List<CoreAPI_Service.Chat> Chats { get; set; } = new List<CoreAPI_Service.Chat>();
+    private List<CoreAPI_Service.Role> Roles { get; set; } = [];
+    private List<CoreAPI_Service.Chat> Chats { get; set; } = [];
 
     private bool _hideModal = true;
 
@@ -68,6 +68,7 @@ public partial class OrgSettingsModal : ComponentBase {
         }
 
         _orgSettingsMode = mode;
+        await GetAffectedDataAsync(mode);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -88,6 +89,9 @@ public partial class OrgSettingsModal : ComponentBase {
                     }
                 });
 
+                Roles = roles.Roles.ToList();
+
+                await InvokeAsync(StateHasChanged);
                 break;
             case OrgSettingsMode.Chats:
                 var chats = await ParentPage.ApiClient.ListOrganizationChatsAsync(new CoreAPI_Service.V0ListXRequest {
