@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Pocco.Libs.Protobufs.CoreAPI.Services;
+using CoreAPI_Service = Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Chat.Components;
 
@@ -21,6 +21,9 @@ public partial class OrgSettingsModal : ComponentBase {
     private bool _canSaveChanges => IsGeneralSettingsChanged();
     private string OrganizationName { get; set; } = string.Empty;
     private string OrganizationDescription { get; set; } = string.Empty;
+
+    private List<CoreAPI_Service.Role> Roles { get; set; } = new List<CoreAPI_Service.Role>();
+    private List<CoreAPI_Service.Chat> Chats { get; set; } = new List<CoreAPI_Service.Chat>();
 
     private bool _hideModal = true;
 
@@ -68,10 +71,43 @@ public partial class OrgSettingsModal : ComponentBase {
         await InvokeAsync(StateHasChanged);
     }
 
+    private async Task GetAffectedDataAsync(OrgSettingsMode mode) {
+        switch (mode) {
+            case OrgSettingsMode.General:
+                var generalData = await ParentPage.ApiClient.GetOrganizationAsync(new CoreAPI_Service.V0BaseRequest {
+                    Id = ParentPage.OrgId,
+                });
+
+                OrganizationName = generalData.Name;
+                OrganizationDescription = generalData.Description;
+                break;
+            case OrgSettingsMode.Roles:
+                var roles = await ParentPage.ApiClient.ListOrganizationRolesAsync(new CoreAPI_Service.V0ListXRequest {
+                    Base = new CoreAPI_Service.V0BaseRequest {
+                        Id = ParentPage.OrgId,
+                    }
+                });
+
+                break;
+            case OrgSettingsMode.Chats:
+                var chats = await ParentPage.ApiClient.ListOrganizationChatsAsync(new CoreAPI_Service.V0ListXRequest {
+                    Base = new CoreAPI_Service.V0BaseRequest {
+                        Id = ParentPage.OrgId,
+                    }
+                });
+
+                break;
+            case OrgSettingsMode.Others:
+                break;
+            default:
+                break;
+        }
+    }
+
     public async Task GetOrganizationInfo() {
         if (ParentPage.ApiClient is not null && !string.IsNullOrWhiteSpace(ParentPage.OrgId)) {
             try {
-                var orgInfo = await ParentPage.ApiClient.GetOrganizationAsync(new V0BaseRequest {
+                var orgInfo = await ParentPage.ApiClient.GetOrganizationAsync(new CoreAPI_Service.V0BaseRequest {
                     Id = ParentPage.OrgId,
                 });
 
@@ -92,7 +128,7 @@ public partial class OrgSettingsModal : ComponentBase {
 
     private async Task OnUpdateOrganizationBtnClicked(MouseEventArgs e) {
         try {
-            await ParentPage.ApiClient.UpdateOrganizationNameAsync(new V0UpdateOrganizationRequest {
+            await ParentPage.ApiClient.UpdateOrganizationNameAsync(new CoreAPI_Service.V0UpdateOrganizationRequest {
                 OrganizationId = ParentPage.OrgId ?? string.Empty,
                 Name = OrganizationName,
                 Description = OrganizationDescription,
@@ -109,7 +145,7 @@ public partial class OrgSettingsModal : ComponentBase {
 
     private async Task OnDeleteOrganizationBtnClicked(MouseEventArgs e) {
         try {
-            await ParentPage.ApiClient.DeleteOrganizationAsync(new V0BaseRequest {
+            await ParentPage.ApiClient.DeleteOrganizationAsync(new CoreAPI_Service.V0BaseRequest {
                 Id = ParentPage.OrgId ?? string.Empty,
             });
             await InvokeAsync(StateHasChanged);
