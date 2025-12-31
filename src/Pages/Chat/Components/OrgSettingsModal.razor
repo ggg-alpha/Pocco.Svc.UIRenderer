@@ -103,7 +103,7 @@
               }
             </div>
             <div class="flex-grow-1 ms-4 me-4 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
-              @foreach (var role in Roles)
+              @foreach (var role in Roles) @* TODO: Selected roleにする*@
               {
                 <div class="mt-3">
                   <label for="roleName">ロール名</label>
@@ -115,12 +115,14 @@
                 </div>
                 <div class="mt-4">
                   <h5>権限設定</h5>
-                  <!-- <div class="form-check">
-                            <input class="ms-1 form-check-input" type="checkbox" value="" id="perm1" />
-                            <label class="form-check-label" for="perm1">
-                              チャットの作成・削除
-                            </label>
-                          </div> -->
+                  @*
+                    <div class="form-check">
+                      <input class="ms-1 form-check-input" type="checkbox" value="" id="perm1" />
+                      <label class="form-check-label" for="perm1">
+                        チャットの作成・削除
+                      </label>
+                    </div>
+                  *@
                   <p>今後対応予定です。</p>
                 </div>
               }
@@ -130,14 +132,55 @@
       }
       else if (_orgSettingsMode is OrgSettingsMode.Chats)
       {
-        <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+        <div class="p-3 d-flex flex-column flex-grow-1" style="min-height: 0; overflow-y: auto;">
           <h4>チャット設定</h4>
+          <div class="d-flex flex-row mt-4" style="height: calc(100% - 40px); min-height: 0;">
+            <div class="h-100 ps-2 pe-2" style="width: 200px; overflow-y: auto; min-height: 0; border-right: 1px solid #ccc;">
+              @foreach (var chat in Chats)
+              {
+                <div class="role_item p-1 d-flex flex-row align-items-center justify-content-start gap-1">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center" style="width:15px; height:15px; background-color:#a5a5a5;"></div>
+                  <div class="" style="font-weight: bold;">
+                    @chat.Name
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="flex-grow-1 ms-4 me-4 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+              @foreach (var chat in Chats) @* TODO: Selected chatにする*@
+              {
+                <div class="mt-3">
+                  <label for="chatName">チャット名</label>
+                  <input id="chatName" name="chatName" type="text" maxlength="30" required placeholder="例) Free talk" value="@chat.Name" />
+                </div>
+                <div class="mt-3">
+                  <label for="chatDescription">チャットルール</label>
+                  <textarea id="chatDescription" name="chatDescription" rows="4" maxlength="400" placeholder="例) 雑談しよう！" value="@chat.Description" />
+                </div>
+                <div class="mt-4">
+                  <h5>権限設定</h5>
+                  @*
+                    <div class="form-check">
+                      <input class="ms-1 form-check-input" type="checkbox" value="" id="perm1" />
+                      <label class="form-check-label" for="perm1">
+                        チャットの作成・削除
+                      </label>
+                    </div>
+                  *@
+                  <p>今後対応予定です。</p>
+                </div>
+              }
+            </div>
+          </div>
         </div>
       }
       else if (_orgSettingsMode is OrgSettingsMode.Others)
       {
         <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
           <h4>その他の設定</h4>
+          <div class="mt-4">
+            <p>🚧ここはまだ工事中です。🚧</p>
+          </div>
         </div>
       }
       else

@@ -100,6 +100,9 @@ public partial class OrgSettingsModal : ComponentBase {
                     }
                 });
 
+                Chats = chats.Chats.ToList();
+
+                await InvokeAsync(StateHasChanged);
                 break;
             case OrgSettingsMode.Others:
                 break;
