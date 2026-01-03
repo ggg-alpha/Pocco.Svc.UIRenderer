@@ -116,7 +116,38 @@ public partial class Page : ComponentBase {
                 // Navigate to the newly created organization's chat page
                 await InvokeAsync(() => NavigationManager.NavigateTo($"/chat/direct-messages", forceLoad: false));
             });
-            // Register event handler
+
+            ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationChatCreated>().Subscribe(async (evt) => {
+                Logger.LogInformation("Received OnOrganizationChatCreated event for Org ID: {OrgId}", evt);
+
+                if (ChatListRef is null) {
+                    Logger.LogWarning("ChatListRef is null; cannot update chat list.");
+                    return;
+                }
+
+                await InvokeAsync(async () => await ChatListRef.InitializeAsync());
+            });
+            ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationChatUpdated>().Subscribe(async (evt) => {
+                Logger.LogInformation("Received OnOrganizationChatUpdated event for Org ID: {OrgId}", evt);
+
+                if (ChatListRef is null) {
+                    Logger.LogWarning("ChatListRef is null; cannot update chat list.");
+                    return;
+                }
+
+                await InvokeAsync(async () => await ChatListRef.InitializeAsync());
+            });
+            ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationChatDeleted>().Subscribe(async (evt) => {
+                Logger.LogInformation("Received OnOrganizationChatDeleted event for Org ID: {OrgId}", evt);
+
+                if (ChatListRef is null) {
+                    Logger.LogWarning("ChatListRef is null; cannot update chat list.");
+                    return;
+                }
+
+                await InvokeAsync(async () => await ChatListRef.InitializeAsync());
+            });
+
             ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationSendMessage>().Subscribe(async (evt) => { //? 何故かここにたどり着く前にイベントの購読がキャンセルされる
                 Logger.LogInformation("Received OnOrganizationSendMessage event for Org ID: {OrgId}", evt);
 
