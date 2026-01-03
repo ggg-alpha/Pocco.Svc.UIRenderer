@@ -38,8 +38,14 @@ function createMessage(id, username, content, createdAt) {
   window.MessageContentHelper.scrollToBottom();
 }
 
+function clearMessages() {
+  const parentEl = document.getElementById('chat_holder');
+  parentEl.innerHTML = '';
+}
+
 window.MessageContentHelper = {
   scrollToBottom,
   markdownStringToHtml,
-  createMessage
+  createMessage,
+  clearMessages
 }

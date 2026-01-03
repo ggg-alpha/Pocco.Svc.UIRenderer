@@ -23,6 +23,8 @@ public partial class ChattingArea : ComponentBase {
         if (firstRender) {
 
             try {
+                await JSRuntime.InvokeVoidAsync("window.MessageContentHelper.clearMessages");
+
                 var latestMessages = await ParentPage.ApiClient.ListOrganizationMessageAsync(new V0ListMessagesRequest {
                     OrganizationId = ParentPage.OrgId,
                     ChatId = ParentPage.ChatListRef!.CurrentChatId,
