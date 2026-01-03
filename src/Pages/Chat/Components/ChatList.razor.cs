@@ -96,6 +96,12 @@ public partial class ChatList : ComponentBase {
         await InvokeAsync(StateHasChanged);
     }
     private async Task OnChatSelected(string id) {
+        if (CurrentChatId == id) {
+            return;
+        }
+
+        CurrentChatId = id;
+
         // 全てのチャットのIsActiveをfalseに設定
         foreach (var chat in Chats) {
             chat.IsActive = false;
@@ -109,6 +115,9 @@ public partial class ChatList : ComponentBase {
 
             ParentPage.Logger.LogInformation("Selected chat: {ChatId}", id);
         }
+
+        // チャットエリアを再初期化
+        await ParentPage.ChattingAreaRef!.Initialize(true);
 
         await InvokeAsync(StateHasChanged);
     }
