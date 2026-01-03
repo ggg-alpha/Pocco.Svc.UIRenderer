@@ -138,35 +138,59 @@
             <div class="h-100 ps-2 pe-2" style="width: 200px; overflow-y: auto; min-height: 0; border-right: 1px solid #ccc;">
               @foreach (var chat in Chats)
               {
-                <div class="role_item p-1 d-flex flex-row align-items-center justify-content-start gap-1">
-                  <div class="rounded-circle d-flex justify-content-center align-items-center" style="width:15px; height:15px; background-color:#a5a5a5;"></div>
+                <div class="role_item p-1 d-flex flex-row align-items-center justify-content-start gap-1" id="@chat.ChatId" @onclick="async (e) => await OnChatSelected(chat.ChatId)">
+                  <i class="bi bi-hash rounded-circle d-flex justify-content-center align-items-center" style="width:15px; height:15px; font-size:18px;"></i>
                   <div class="" style="font-weight: bold;">
                     @chat.Name
                   </div>
                 </div>
               }
+              <hr class="my-2" />
+              <div class="role_item p-1 d-flex flex-row align-items-center justify-content-start gap-1" style="color: #ffffff;" @onclick="async (e) => await OnChatCreateClicked(e)">
+                <i class="bi bi-plus-square-fill rounded-circle d-flex justify-content-center align-items-center" style="width:15px; height:15px; font-weight: bold; color: #15b100;"></i>
+                <div class="" style="font-weight: bold;">
+                  チャットを作成
+                </div>
+              </div>
             </div>
             <div class="flex-grow-1 ms-4 me-4 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
-              @foreach (var chat in Chats) @* TODO: Selected chatにする*@
+              @if (_selectedChat is null)
+              {
+                <div class="mt-3">
+                  チャットを作成するか、リストから選択してください。
+                </div>
+              }
+              else
               {
                 <div class="mt-3">
                   <label for="chatName">チャット名</label>
-                  <input id="chatName" name="chatName" type="text" maxlength="30" required placeholder="例) Free talk" value="@chat.Name" />
+                  <input id="chatName" name="chatName" type="text" maxlength="30" required placeholder="例) Free talk" @bind="@_selectedChat.Name" />
                 </div>
-                <div class="mt-3">
-                  <label for="chatDescription">チャットルール</label>
-                  <textarea id="chatDescription" name="chatDescription" rows="4" maxlength="400" placeholder="例) 雑談しよう！" value="@chat.Description" />
-                </div>
+                @if (string.IsNullOrEmpty(_selectedChat.ChatId))
+                {
+                  <div class="mt-4">
+                    <button class="btn btn-success" @onclick="async (e) => await OnChatCreateBtnClicked(e)">
+                      作成
+                    </button>
+                  </div>
+                }
+                else
+                {
+                  <div class="mt-3">
+                    <label for="chatDescription">チャットルール</label>
+                    <textarea id="chatDescription" name="chatDescription" rows="4" maxlength="400" placeholder="例) 雑談しよう！" @bind="@_selectedChat.Description" />
+                  </div>
+                }
                 <div class="mt-4">
                   <h5>権限設定</h5>
                   @*
-                    <div class="form-check">
-                      <input class="ms-1 form-check-input" type="checkbox" value="" id="perm1" />
-                      <label class="form-check-label" for="perm1">
-                        チャットの作成・削除
-                      </label>
-                    </div>
-                  *@
+                  <div class="form-check">
+                    <input class="ms-1 form-check-input" type="checkbox" value="" id="perm1" />
+                    <label class="form-check-label" for="perm1">
+                      チャットの作成・削除
+                    </label>
+                  </div>
+                *@
                   <p>今後対応予定です。</p>
                 </div>
               }

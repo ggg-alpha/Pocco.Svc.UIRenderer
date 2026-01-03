@@ -24,6 +24,8 @@ public partial class OrgSettingsModal : ComponentBase {
 
     private List<CoreAPI_Service.Role> Roles { get; set; } = [];
     private List<CoreAPI_Service.Chat> Chats { get; set; } = [];
+    private CoreAPI_Service.Role? _selectedRole { get; set; }
+    private CoreAPI_Service.Chat? _selectedChat { get; set; }
 
     private bool _hideModal = true;
 
@@ -90,6 +92,7 @@ public partial class OrgSettingsModal : ComponentBase {
                 });
 
                 Roles = roles.Roles.ToList();
+                _selectedRole = Roles.FirstOrDefault();
 
                 await InvokeAsync(StateHasChanged);
                 break;
@@ -101,6 +104,7 @@ public partial class OrgSettingsModal : ComponentBase {
                 });
 
                 Chats = chats.Chats.ToList();
+                _selectedChat = Chats.FirstOrDefault();
 
                 await InvokeAsync(StateHasChanged);
                 break;
@@ -109,6 +113,51 @@ public partial class OrgSettingsModal : ComponentBase {
             default:
                 break;
         }
+    }
+
+    private async Task OnChatSelected(string chatId) {
+        if (chatId == _selectedChat?.ChatId) {
+            return;
+        }
+
+        _selectedChat = Chats.FirstOrDefault(c => c.ChatId == chatId);
+
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task OnChatCreateClicked(MouseEventArgs e) {
+        // Show create modal
+        _selectedChat = new CoreAPI_Service.Chat();
+
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task OnChatCreateBtnClicked(MouseEventArgs e) {
+        if (_selectedChat == null) {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(_selectedChat?.Name)) {
+            ParentPage.Logger.LogWarning("Chat name is empty.");
+            return;
+        }
+
+        try {
+            await ParentPage.ApiClient.CreateOrganizationChatAsync(new CoreAPI_Service.V0CreateChatRequest {
+                OrganizationId = ParentPage.OrgId,
+                Base = new CoreAPI_Service.V0CreateXRequest {
+                    Name = _selectedChat?.Name,
+                },
+            });
+
+            await GetAffectedDataAsync(OrgSettingsMode.Chats);
+        } catch (Exception ex) {
+            ParentPage.Logger.LogError(ex, "Failed to create chat for organization with ID: {OrgId}", ParentPage.OrgId);
+        }
+    }
+
+    private async Task OnRoleSelected(string roleId) {
+        _selectedRole = Roles.FirstOrDefault(r => r.RoleId == roleId);
+
+        await InvokeAsync(StateHasChanged);
     }
 
     public async Task GetOrganizationInfo() {
