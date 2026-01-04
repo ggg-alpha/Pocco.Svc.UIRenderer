@@ -90,7 +90,7 @@ h1:focus {
 }
 
 img {
-  user-select: none;
+  /* user-select: none; */
   pointer-events: none;
 }
 
@@ -139,3 +139,64 @@ img {
   --bs-primary: var(--color_mint);
   --bs-secondary: var(--color_gray);
 }
+
+/* #region Markdown-it styles */
+.markdown-content {
+  /* color: orange; */
+
+  p,
+  ol,
+  ul,
+  blockquote,
+  code,
+  pre,
+  img {
+    margin: 0;
+    padding: 0;
+  }
+
+  ol,
+  ul {
+    padding-inline-start: 18px;
+  }
+
+  blockquote {
+    padding: 0 0 0 2px;
+
+    border-left: 2px solid gray;
+
+    blockquote {
+      margin: 0 0 0 4px;
+      padding: 0 0 0 2px;
+
+      blockquote {
+        margin: 0 0 0 4px;
+        padding: 0 0 0 2px;
+      }
+    }
+  }
+
+  code {
+    padding-right: 2px;
+    padding-left: 2px;
+    border-radius: 2px;
+
+    color: var(--color_mint);
+    background-color: var(--color_gray);
+  }
+
+  pre {
+    code {
+      color: #fff;
+      background-color: var(--color_gray);
+    }
+  }
+
+  img {
+    max-width: 25%;
+    margin: 0 2px;
+    display: block;
+  }
+}
+
+/* #endregion */

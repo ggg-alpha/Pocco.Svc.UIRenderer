@@ -2,7 +2,7 @@ const mdIt = window.markdownit();
 
 function scrollToBottom() {
   try {
-    const messageHolderEl = document.getElementById('message_holder_wrapper');
+    const messageHolderEl = document.getElementById('message_holder');
     messageHolderEl.scrollTop = messageHolderEl.scrollHeight;
   } catch (error) {
     console.error(error);
@@ -11,11 +11,12 @@ function scrollToBottom() {
 
 function markdownStringToHtml(content, id) {
   const el = document.getElementById(id);
+  el.classList.add("markdown-content");
   el.innerHTML = mdIt.render(content);
 }
 
 function createMessage(id, username, content, createdAt) {
-  const parentEl = document.getElementById('chat_holder');
+  const parentEl = document.getElementById('message_holder');
 
   const messageEl = document.createElement('div');
   messageEl.id = id;
@@ -39,7 +40,7 @@ function createMessage(id, username, content, createdAt) {
 }
 
 function clearMessages() {
-  const parentEl = document.getElementById('chat_holder');
+  const parentEl = document.getElementById('message_holder');
   parentEl.innerHTML = '';
 }
 

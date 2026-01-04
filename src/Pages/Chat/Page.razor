@@ -41,7 +41,7 @@
   </header>
 
   <!-- Body -->
-  <div class="h-100 w-100 d-flex flex-row justify-content-start align-items-start position-relative">
+  <div class="h-100 w-100 d-flex flex-row justify-content-start align-items-start position-relative overflow-auto">
     <!-- Sidebar -->
     <div class="h-100 d-flex flex-column justify-content-start align-items-center" style="width: 250px; padding: 10px 4px;">
       <!-- Organization info center --> @* Mode: org/dm/welcome *@
@@ -53,7 +53,7 @@
       <ChatList ParentPage="this" />
     </div>
     <!-- Render area -->
-    <div class="h-100 flex-grow-1 d-flex flex-column justify-content-start align-items-start" style="min-width: 0; border-top-left-radius: 4px; border-color: var(--bs-gray-600); border-width: 1px; border-style: solid; border-bottom: none; border-right: none;">
+    <div style="height: 100%; width: calc(100% - 258px); border-radius: 4px; border-color: var(--bs-gray-600); border-width: 1px; border-style: solid;">
       <ChattingArea ParentPage="this" />
     </div>
   </div>

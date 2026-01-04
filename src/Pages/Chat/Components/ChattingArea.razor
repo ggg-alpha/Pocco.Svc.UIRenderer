@@ -1,15 +1,13 @@
-<div class="chat_area w-100 h-100 d-flex flex-column">
-  <div class="message_holder_wrapper w-100 overflow-auto" id="message_holder_wrapper">
-    <div class="message_holder p-1 w-100 d-flex flex-column" id="chat_holder"></div>
-  </div>
+<div class="chat_area">
+  <div id="message_holder"></div>
 
-  <div class="input_box">
-    <div class="d-flex flex-row justify-content-start align-items-center gap-1">
+  <div class="composer">
+    <div class="input_box">
       <label class="input_box_file_label" for="input_box_file" aria-label="画像を選択">
         <i class="bi bi-image" style="font-size: large;" aria-hidden="true"></i>
       </label>
       <input type="file" id="input_box_file" accept="image/*, video/*, audio/*" />
-      <textarea id="input_box_text" class="input_box_text flex-grow-1" placeholder="メッセージを入力してください" @bind="_input" @bind:event="oninput" @onkeypress="OnMessageInputChanged"></textarea>
+      <textarea id="input_box_text" class="input_box_text" placeholder="メッセージを入力してください" @bind="_input" @bind:event="oninput" @onkeypress="OnMessageInputChanged"></textarea>
       <div class="input_box_send">
         <i class="bi bi-send" style="font-size: large;"></i>
       </div>
