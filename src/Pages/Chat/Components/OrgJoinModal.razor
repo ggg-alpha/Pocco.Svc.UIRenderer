@@ -5,7 +5,7 @@
       <h3>組織への参加</h3>
       <div class="field">
         <label for="name">招待コード</label>
-        <input id="name" name="name" type="text" maxlength="30" required placeholder="Ex: abcdefg12345" @oninput="OnJoinCodeInputChange" />
+        <input id="name" name="name" type="text" maxlength="30" required placeholder="Ex: abcdefg12345" @oninput="OnJoinCodeInputChange" @bind="@_joinCode" />
         <div class="error">@_codeInputError</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
