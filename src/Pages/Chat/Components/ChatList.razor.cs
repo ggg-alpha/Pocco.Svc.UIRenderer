@@ -79,6 +79,10 @@ public partial class ChatList : ComponentBase {
             index++;
         }
 
+        if (chatList.Count == 0) {
+            return;
+        }
+
         Chats = chatList;
         CurrentChatId = Chats.FirstOrDefault()?.Id ?? string.Empty;
 
