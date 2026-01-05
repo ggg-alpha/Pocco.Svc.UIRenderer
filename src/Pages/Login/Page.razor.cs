@@ -37,7 +37,7 @@ partial class Page : ComponentBase {
                 try {
                     var result = await ApiClient.SessionManager.VerifySessionAsync(sessionData);
                     if (result is true) {
-                        NavigationManager.NavigateTo("/chat");
+                        NavigationManager.NavigateTo("/hub");
                     }
                 } catch (Exception ex) {
                     Logger.LogError(ex, "Failed to verify session data.");
@@ -115,7 +115,7 @@ partial class Page : ComponentBase {
                 throw new Exception("Login failed due to invalid credentials.");
             }
 
-            NavigationManager.NavigateTo("/chat");
+            NavigationManager.NavigateTo("/hub");
         } catch (Exception ex) {
             emailError = "Invalid email.";
             hasEmailError = true;

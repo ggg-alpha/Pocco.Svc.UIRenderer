@@ -46,7 +46,7 @@ public partial class Page : ComponentBase {
         if (firstRender) {
             if (string.IsNullOrWhiteSpace(OrgId)) {
                 Logger.LogInformation("No organization ID provided in URL. Redirecting to direct messages page.");
-                NavigationManager.NavigateTo("/chat/direct-messages");
+                NavigationManager.NavigateTo("/hub");
                 return;
             }
 

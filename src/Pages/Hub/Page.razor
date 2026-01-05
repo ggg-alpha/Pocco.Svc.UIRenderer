@@ -1,0 +1,277 @@
+@page "/hub"
+@layout Empty
+
+<div class="h-100 w-100 d-flex justify-content-start align-items-start flex-column overflow-hidden position-relative">
+
+  <header class="w-100 d-flex flex-row justify-content-between align-items-center" style="height: 45px;">
+    <div class="h-100 d-flex flex-row justify-content-start align-items-center">
+      <!-- Promotion -->
+      <div class="h-100 d-flex flex-row justify-content-start align-items-end pb-2">
+        <img src="http://localhost:5197/sys-content/logos/pocco-icon.png" alt="Pocco is here!" style="width: 20px; height: 20px; margin-left: 10px;" />
+        <h1 style="font-size: 16px; font-weight: bold; color: white; margin: 0 10px; padding: 0;">
+          Pocco
+        </h1>
+      </div>
+    </div>
+
+    <!-- Account icon -->
+    <div class="h-100 d-flex flex-row justify-content-end align-items-center" style="margin-right: 10px;">
+      <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" />
+    </div>
+  </header>
+
+  <div class="h-100 w-100 d-flex flex-row justify-content-start align-items-start position-relative overflow-auto">
+    @* Sidebar *@
+    <div class="p-2 h-100 d-flex flex-column justify-content-start align-items-start overflow-auto" style="width: 250px;">
+      @* Organization list *@
+      @foreach (var org in _orgs)
+      {
+        <div class="workspce_org_item p-1 w-100 position-relative">
+          <a href="/orgs/@org.OrganizationId" class="d-flex flex-row justify-content-start align-items-center">
+            <img src="https://placehold.jp/120x120.png" alt="@org.Name | @org.Description" />
+            <p>@org.Name</p>
+          </a>
+        </div>
+      }
+
+      <hr class="w-100" />
+
+
+      <a href="/orgs/join" class="w-100"><button class="sidebar-org_action-btn btn btn-primary mb-2 w-100">組織に参加</button></a>
+      <a href="/orgs/new" class="w-100"><button class="sidebar-org_action-btn btn btn-success mb-2 w-100">組織を作成</button></a>
+    </div>
+
+    @* Render area *@
+    <div class="render_area m-1 w-100 overflow-auto d-flex flex-column justify-content-start align-items-center" style="height: calc(100% - 8px); border-radius: 4px; border-color: var(--bs-gray-600); border-width: 1px; border-style: solid;">
+      @* Search topic bar *@
+      <input type="text" placeholder="🔍 今のトレンドや気になることを検索しよう！">
+
+      @* Recent activities *@
+      <h3 class="mt-3">最近のアクティビティ</h3>
+      <div class="render_area-recent_activities d-flex flex-row justify-content-between align-items-center">
+        @* New message/New release/Today schedules *@
+        <div class="item container overflow-auto">
+          @* New message *@
+          <div class="mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <p>新着メッセージ</p>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>from: Poccoふれんず</p>
+              <p>おはよう！</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>from: 兎印ボルト工業</p>
+              <p>億万長者になれるボルトいりませんか？</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>from: 上質な情シス</p>
+              <p>ポッコがぽっこり行ってて草</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>from: モン〇ン仲間</p>
+              <p>お願いします。装備集めるの助けてください。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>from: デスマが好きな上司</p>
+              <p>フハハ！デスマーチやるぞ！</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>from: 生意気なアヒル</p>
+              <p>ｸﾞﾜｯwwww</p>
+            </div>
+          </div>
+        </div>
+        <div class="item container overflow-auto">
+          @* New release *@
+          <div class="mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <p>新着リリース</p>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <div class="message_container">
+              <p>from: Escape from Pocco</p>
+              <p>新アイテムの追加! v0.25.1</p>
+              <p>みなさん、こんにちは。Sample Studioです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <div class="message_container">
+              <p>from: Pocco is Knocking!</p>
+              <p>新アイテムの追加! v1.0.0</p>
+              <p>ノック！ノック！新しいリリースです！</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <div class="message_container">
+              <p>from: 兎印ボルト工業</p>
+              <p>新しいボルトを発売します！</p>
+              <p>今までのボルトとは違う。それを実感していただきたい。</p>
+            </div>
+          </div>
+        </div>
+        <div class="item container overflow-auto">
+          @* Today schedules *@
+          <div class="mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <p>今日の予定</p>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <div class="message_container">
+              <p>6:30</p>
+              <div class="d-flex flex-row justify-content-start align-items-start gap-1">
+                <div class="tile"></div>
+                <p>起きる！</p>
+              </div>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <div class="message_container">
+              <p>7:00</p>
+              <div class="d-flex flex-row justify-content-start align-items-start gap-1">
+                <div class="tile"></div>
+                <p>ごはん！</p>
+              </div>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <div class="message_container">
+              <p>17:00</p>
+              <div class="d-flex flex-row justify-content-start align-items-start gap-1">
+                <div class="tile"></div>
+                <p>ごはん！</p>
+              </div>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <div class="message_container">
+              <p>22:00</p>
+              <div class="d-flex flex-row justify-content-start align-items-start gap-1">
+                <div class="tile"></div>
+                <p>寝る！</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      @* Recomended organizations *@
+      <h3 class="mt-3">おすすめの組織</h3>
+      <div class="render_area-recomended_organizations d-flex flex-row justify-content-between align-items-center overflow-x-auto overflow-y-hidden">
+        <div class="item container overflow-auto">
+          <div class="mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <p>Games</p>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+        </div>
+        <div class="item container overflow-auto">
+          <div class="mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <p>IT</p>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+        </div>
+        <div class="item container overflow-auto">
+          <div class="mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <p>Music</p>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+          <div class="component mt-1 me-1 p-1 d-flex gap-1 flex-row justify-content-start align-items-start position-relative overflow-hidden">
+            <img src="https://placehold.jp/120x120.png" alt="SampleStudio logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+            <div class="message_container">
+              <p>SampleStudio</p>
+              <p>この組織はサンプルスタジオの公式コミュニティです。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
