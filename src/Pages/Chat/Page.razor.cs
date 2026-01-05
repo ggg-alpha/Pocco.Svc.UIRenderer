@@ -151,15 +151,24 @@ public partial class Page : ComponentBase {
             ApiClient.EventHub.GetObservable<ClientEvents.OnOrganizationSendMessage>().Subscribe(async (evt) => { //? 何故かここにたどり着く前にイベントの購読がキャンセルされる
                 Logger.LogInformation("Received OnOrganizationSendMessage event for Org ID: {OrgId}", evt);
 
-                // Add new message to dictionary
-                var converted = evt.Message.Content.Replace("\\n", "\n");
-                await JSRuntime.InvokeVoidAsync(
-                    "window.MessageContentHelper.createMessage",
-                    $"{evt.Message.MessageId}",
-                    $"{evt.Message.SenderId}",
-                    converted,
-                    $"{evt.Message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}"
-                );
+                // Get user profile
+                try {
+                    var user = await ApiClient.GetAccountAsync(new V0AccountGetProfileRequest {
+                        UserId = evt.Message.SenderId
+                    });
+
+                    // Add new message to dictionary
+                    var converted = evt.Message.Content.Replace("\\n", "\n");
+                    await JSRuntime.InvokeVoidAsync(
+                        "window.MessageContentHelper.createMessage",
+                        $"{evt.Message.MessageId}",
+                        $"{user.Username}",
+                        converted,
+                        $"{evt.Message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}"
+                    );
+                } catch (Exception ex) {
+                    Logger.LogWarning("Error occurred while generating message: {0}", ex.Message);
+                }
 
                 await InvokeAsync(StateHasChanged);
             });

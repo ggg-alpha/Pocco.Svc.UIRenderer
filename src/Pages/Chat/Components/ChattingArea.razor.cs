@@ -33,12 +33,15 @@ public partial class ChattingArea : ComponentBase {
                 });
 
                 foreach (var message in latestMessages.Messages) {
-                    var converted = message.Content.Replace("\\n", "\n");
+                    var user = await ParentPage.ApiClient.GetAccountAsync(new V0AccountGetProfileRequest {
+                        UserId = message.SenderId
+                    });
 
+                    var converted = message.Content.Replace("\\n", "\n");
                     await JSRuntime.InvokeVoidAsync(
                         "window.MessageContentHelper.createMessage",
                         $"{message.MessageId}",
-                        $"{message.SenderId}",
+                        $"{user.Username}",
                         converted,
                         $"{message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}"
                     );
