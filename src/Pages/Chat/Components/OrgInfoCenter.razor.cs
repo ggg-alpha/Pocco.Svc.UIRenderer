@@ -6,12 +6,15 @@ namespace Pocco.Client.Web.Pages.Chat.Components;
 public partial class OrgInfoCenter : ComponentBase {
     [Parameter] public Page ParentPage { get; set; } = null!;
     [Parameter] public string OrgId { get; set; } = string.Empty;
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
+    private string _cdnAddress { get; set; } = string.Empty;
 
     private string _orgName = string.Empty;
     private string _orgDescription = string.Empty;
 
     protected override async Task OnInitializedAsync() {
         ParentPage.OrgInfoCenterRef = this;
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
 
         await base.OnInitializedAsync();
     }

@@ -15,7 +15,7 @@
       @foreach (var org in Orgs)
       {
         <div class="organization_list_item w-100 p-2 mb-2 rounded-2 d-flex flex-row justify-content-start align-items-center hover_effect" style="cursor: pointer;" @onclick="@(async (e) => await OnOrgSwitcherOrgSelectedClicked(e, org.Id))">
-          <img src="https://placehold.jp/120x120.png" alt="Organization icon" class="rounded-2" style="width: 40px; height: 40px; margin-right: 10px;" />
+          <img src="http://@_cdnAddress/sys-content/images/120x120.png" alt="Organization icon" class="rounded-2" style="width: 40px; height: 40px; margin-right: 10px;" />
           <div>
             <h5 style="margin: 0; padding: 0;">@org.Name</h5>
             <p style="margin: 0; padding: 0;">@org.Description</p>

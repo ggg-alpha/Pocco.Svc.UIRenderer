@@ -21,6 +21,15 @@ partial class Page : ComponentBase {
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Inject] protected ILogger<Page> Logger { get; set; } = null!;
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
+
+    private string _cdnAddress { get; set; } = string.Empty;
+
+    protected override void OnInitialized() {
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
+
+        base.OnInitialized();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {

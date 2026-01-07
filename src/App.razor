@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IConfiguration _configuration
+
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 
 <head>
@@ -6,13 +8,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <base href="/" />
 
-  <link rel="stylesheet" href="http://localhost:5197/sys-content/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="http://localhost:5197/sys-content/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="http://@_cdnAddress/sys-content/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://@_cdnAddress/sys-content/bootstrap-icons/bootstrap-icons.css">
 
   <link rel="stylesheet" href=@Assets["app.css"] />
   <link rel="stylesheet" href="Pocco.Client.Web.styles.css" />
 
-  <link rel="icon" type="image/png" href="http://localhost:5197/sys-content/logos/pocco-icon.png">
+  <link rel="icon" type="image/png" href="http://@_cdnAddress/sys-content/logos/pocco-icon.png">
 
   <HeadOutlet @rendermode="InteractiveServer" />
 </head>
@@ -20,11 +22,21 @@
 <body>
   <Routes @rendermode="InteractiveServer" />
 
-  <script src="http://localhost:5197/sys-content/bootstrap/dist/js/bootstrap.bundle.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js "></script>
+  <script src="http://@_cdnAddress/sys-content/bootstrap/dist/js/bootstrap.bundle.js"></script>
+  <script src="http://@_cdnAddress/sys-content/markdown-it-14.1.0/dist/markdown-it.min.js "></script>
   <script src="_framework/blazor.web.js"></script>
-  <script src="@Assets["/js/LocalStorageHelper.js"]"></script>
   <script src="@Assets["/js/MessageContentHelper.js"]"></script>
 </body>
 
 </html>
+
+@code {
+  private string _cdnAddress { get; set; } = string.Empty;
+
+  protected override void OnInitialized()
+  {
+    _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
+
+    base.OnInitialized();
+  }
+}

@@ -47,9 +47,12 @@ public partial class ChatList : ComponentBase {
     public string CurrentChatId { get; set; } = string.Empty;
 
     private bool _expandCategory = true;
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
+    private string _cdnAddress { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync() {
         ParentPage.ChatListRef = this;
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
 
         // ソートをParentID→Indexの順に行う
         Chats = Chats

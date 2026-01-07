@@ -30,11 +30,16 @@ public partial class Page : ComponentBase {
 
     private bool _expandCategory = true;
 
-    protected override async Task OnInitializedAsync() {
-        Logger.LogInformation("Chat Page Initialized with OrgId: {OrgId}", OrgId);
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
+    private string _cdnAddress { get; set; } = string.Empty;
 
-        await Task.CompletedTask;
+    protected override void OnInitialized() {
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
+
+        base.OnInitialized();
     }
+
+
 
     protected override async Task OnParametersSetAsync() {
         Logger.LogInformation("Chat Page Parameters Set. Current OrgId: {OrgId}", OrgId);

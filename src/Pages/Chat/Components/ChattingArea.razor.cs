@@ -12,9 +12,12 @@ public partial class ChattingArea : ComponentBase {
 
     [Inject] public ILogger<ChattingArea> Logger { get; set; } = null!;
     [Inject] public IJSRuntime JSRuntime { get; set; } = null!;
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
+    private string _cdnAddress { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync() {
         ParentPage.ChattingAreaRef = this;
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
 
         await base.OnInitializedAsync();
     }
@@ -43,7 +46,8 @@ public partial class ChattingArea : ComponentBase {
                         $"{message.MessageId}",
                         $"{user.Username}",
                         converted,
-                        $"{message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}"
+                        $"{message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}",
+                        _cdnAddress
                     );
                 }
 

@@ -15,14 +15,14 @@ function markdownStringToHtml(content, id) {
   el.innerHTML = mdIt.render(content);
 }
 
-function createMessage(id, username, content, createdAt) {
+function createMessage(id, username, content, createdAt, useCdn = "http://localhost:5197") {
   const parentEl = document.getElementById('message_holder');
 
   const messageEl = document.createElement('div');
   messageEl.id = id;
   messageEl.classList.add("w-100", "d-flex", "flex-row", "justify-content-start", "align-items-start", "gap-1")
   messageEl.innerHTML = `
-  <img src="http://localhost:5197/sys-content/images/120x120.png" alt="User icon" style="width: 45px; height: auto; border-radius: 50%;" />
+  <img src="http://${useCdn}/sys-content/images/120x120.png" alt="User icon" style="width: 45px; height: auto; border-radius: 50%;" />
   <div>
     <div class="d-flex flex-row gap-2 justify-content-start align-items-end" style="color: rgb(228, 228, 228);">
       <h4>${username}</h4>

@@ -17,6 +17,8 @@ public partial class OrgSelectModal : ComponentBase {
     [Parameter] public NavigationManager NavigationManager { get; set; } = null!;
     [Parameter] public ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Parameter] public APIClient.Core.APIClient ApiClient { get; set; } = null!;
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
+    private string _cdnAddress { get; set; } = string.Empty;
 
     // TODO: パラメータ化する
     public List<OrgInfo> Orgs { get; set; } = new List<OrgInfo>();
@@ -25,6 +27,7 @@ public partial class OrgSelectModal : ComponentBase {
 
     protected override async Task OnInitializedAsync() {
         ParentPageRef.OrgSelectModalRef = this;
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
 
         // 組織リストを名前でソート
         Orgs = Orgs.OrderBy(o => o.Name).ToList();

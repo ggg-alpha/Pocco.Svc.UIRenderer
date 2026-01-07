@@ -13,8 +13,17 @@ partial class Page : ComponentBase {
     [Inject] public NavigationManager NavigationManager { get; set; } = null!;
     [Inject] public ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
     [Inject] public APIClient.Core.APIClient ApiClient { get; set; } = null!;
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
 
     private readonly List<Organization> _orgs = [];
+
+    private string _cdnAddress { get; set; } = string.Empty;
+
+    protected override void OnInitialized() {
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
+
+        base.OnInitialized();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
