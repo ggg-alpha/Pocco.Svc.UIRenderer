@@ -1,62 +1,53 @@
 using System.Text.Json;
-using Google.Protobuf;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
-using Pocco.Libs.Protobufs.Services;
 
 namespace Pocco.Client.Web.Pages.Logout;
 
-public partial class Page : ComponentBase
-{
+public partial class Page : ComponentBase {
+    [Inject] private APIClient.Core.APIClient ApiClient { get; set; } = null!;
     [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] private ILogger<Page> Logger { get; set; } = null!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
     [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
+    [Inject] protected ILogger<Page> Logger { get; set; } = null!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (!firstRender) return;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            // Verify session
+            var sessionData = await LocalStorageProvider.GetSessionDataAsync();
+            if (sessionData is not null) {
+                Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
+                await ApiClient.SessionManager.VerifySessionAsync(sessionData);
+            } else {
+                Logger.LogWarning("No session data found in local storage. Staying on login page.");
+            }
+        }
+
         await HandleLogout();
     }
 
-    private async Task HandleLogout()
-    {
+    private async Task HandleLogout() {
         // Get session data from local storage
-        var sessionDataString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "sessionData"); // TODO: Replace to ProtectedLocalStorage
-        if (string.IsNullOrWhiteSpace(sessionDataString))
-        {
+        var sessionData = await LocalStorageProvider.GetSessionDataAsync();
+        if (sessionData is null) {
             NavigationManager.NavigateTo("/login");
             return;
         }
 
-        // Convert session data string to V0ApiSessionData
-        var sessionData = JsonSerializer.Deserialize<V0ApiSessionData>(sessionDataString);
-        if (sessionData == null)
-        {
-            NavigationManager.NavigateTo("/apps");
-            return;
-        }
+        Logger.LogInformation("{Data}", JsonSerializer.Serialize(sessionData));
 
-        Logger.LogInformation("{Data}", sessionDataString);
+        try {
+            var isLoggedOut = await ApiClient.SessionManager.LogoutAsync();
+            if (isLoggedOut) {
+                Logger.LogInformation("Logout successful.");
+            } else {
+                Logger.LogWarning("Logout failed on server side. But clearing local session data.");
+            }
 
-        try
-        {
-            // var response = await AuthClient.UnauthenticateAsync(sessionData);
-
-            // Clear session data from local storage
-            await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "sessionData"); // TODO: Replace to ProtectedLocalStorage
-            NavigationManager.NavigateTo("/logout-success");
-        }
-        catch (Exception ex)
-        {
+            await LocalStorageProvider.ClearSessionDataAsync();
+            NavigationManager.NavigateTo("/login");
+        } catch (Exception ex) {
             Logger.LogError($"Logout failed: {ex.Message}");
             NavigationManager.NavigateTo("/apps");
         }
-    }
-
-    private void GoToRegisterPage()
-    {
-        NavigationManager.NavigateTo("/register");
     }
 }

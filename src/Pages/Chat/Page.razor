@@ -1,77 +1,62 @@
-@page "/apps/v2/chat"
-@layout Chat.Layouts.MainFrame
+@page "/orgs/{OrgId?}"
 @using Pocco.Client.Web.Pages.Chat.Components
-@using Pocco.Client.Web.Pages.Chat.Layouts
+@layout Empty
 
-@*
-    TODO: イベントの実装
-    TODO: 1. APIをこのページに統合
-    TODO: 2. APIイベントの購読をこのページに統合
-    TODO: 3. 組織の取得、選択、切り替えの実装
-    TODO: 4. チャット選択、チャット表示の実装
-    TODO: 5. メンバーリストの実装
- *@
+<div class="h-100 w-100 d-flex flex-column justify-content-start align-items-start overflow-hidden position-relative">
+  <!-- Org select Modal -->
+  <OrgSelectModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager" LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
-<Header>
-    <Promotion IsBordered=false />
+  <!-- Org join Modal -->
+  <OrgJoinModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager" LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
-    <div class="d-flex gap-4">
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="inbox-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="question-circle-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="cloud-download-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-    </div>
-</Header>
+  <!-- Org create Modal -->
+  <OrgCreateModal ParentPageRef="this" Logger="this.Logger" NavigationManager="this.NavigationManager" LocalStorageProvider="this.LocalStorageProvider" ApiClient="this.ApiClient" />
 
-<MainContentFrame>
-    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
-        Width="35px">
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="chat-dots-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="calendar-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="table" Cursor="pointer" Color="#16283a" Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="easel2-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="camera-reels-fill" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="images" Cursor="pointer" Color="#16283a" Height="24px" />
-        <Icons Mode=@Icons.IconMode.BootstrapIcons IconSource="journal-richtext" Cursor="pointer" Color="#16283a"
-            Height="24px" />
-    </Sidebar>
-    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Scroll"
-        Width="240px">
-        <OrganizationSelector />
-        <div
-            class="w-100 px-1 pt-1 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
-            <Chats Type="Chats.ChatType.Message" Name="Generallllllllllllllllllllllllllllll" />
-            <Chats Type="Chats.ChatType.Category" Name="カテゴリー1" Id="category1" Children="_sampleChatsList.Children" />
-        </div>
-    </Sidebar>
+  <!-- Org settings Modal -->
+  <OrgSettingsModal ParentPage="this" />
 
-    <div class="d-flex flex-column flex-grow-1 h-100">
-        <ChatHeader ChatName="Sample Chat" Description="Sample chat description!" />
-        <ChatArea Messages="_sampleMessages" />
+  <header class="w-100 d-flex flex-row justify-content-between align-items-center" style="height: 45px;">
+    <div class="h-100 d-flex flex-row justify-content-start align-items-center">
+      <!-- Promotion -->
+      <div class="h-100 d-flex flex-row justify-content-center align-items-center">
+        <a href="/hub" class="d-flex flex-row justify-content-center align-items-end">
+          <img src="http://@_cdnAddress/sys-content/logos/pocco-icon.png" alt="Pocco is here!" style="width: 20px; height: 20px; margin-left: 10px;" />
+          <h1 style="font-size: 16px; font-weight: bold; color: white; margin: 0 10px; padding: 0;">
+            Pocco
+          </h1>
+        </a>
+      </div>
     </div>
 
-    <Sidebar JustifyContentType="Sidebar.JustifyContentOptions.Start" OverflowType="Sidebar.OverflowOptions.Hidden"
-        Width="240px">
-        <div
-            class="w-100 px-2 pt-2 d-flex flex-column justify-content-start align-items-start flex-grow-1 overflow-x-hiddne overflow-y-scroll">
-            <Member Name="Member 1" CustomStatusMessage="やっほー" Status="Member.MemberStatus.Online" />
-            <Member Name="Member 2" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
-            <Member Name="Member 3" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
-            <Member Name="Member 4" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
-            <Member Name="Member 5" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
-            <Member Name="Member 6" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
-            <Member Name="Member 7" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
-            <Member Name="Member 8" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
-            <Member Name="Member 9" CustomStatusMessage="" Status="Member.MemberStatus.Online" />
-            <Member Name="Member 10" CustomStatusMessage="" Status="Member.MemberStatus.Busy" />
-            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Offline" />
-            <Member Name="Member 12" CustomStatusMessage="" Status="Member.MemberStatus.Away" />
-        </div>
-    </Sidebar>
-</MainContentFrame>
+    <!-- Switcher -->
+    <div @onclick="async (e) => await OrgSelectModalRef!.Show(e)" class="d-flex flex-row justify-content-start align-items-center dropdown rounded-2 position-relative" style="width: 240px; margin: 0 25px; padding: 4px 8px; border: 1px solid gray; cursor: pointer;">
+      <img src="http://@_cdnAddress/sys-content/images/120x120.png" alt="Pocco is here!" class="rounded-2" style="width: 30px; height: 30px; margin-right: 5px;" />
+      <div class="d-flex flex-grow-1" style="font-weight: 700;">
+        @CurrentOrgName
+      </div>
+    </div>
+
+    <!-- Account icon -->
+    <div class="h-100 d-flex flex-row justify-content-end align-items-center" style="margin-right: 10px;">
+      <img src="http://@_cdnAddress/sys-content/images/120x120.png" alt="User icon" style="width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" />
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="h-100 w-100 d-flex flex-row justify-content-start align-items-start position-relative overflow-auto">
+    <!-- Sidebar -->
+    <div class="h-100 d-flex flex-column justify-content-start align-items-center" style="width: 250px; padding: 10px 4px;">
+      <!-- Organization info center --> @* Mode: org/dm/welcome *@
+      <OrgInfoCenter ParentPage="this" />
+
+      <hr style="width: 95%;" />
+
+      <!-- Channel list -->
+      <ChatList ParentPage="this" />
+    </div>
+    <!-- Render area -->
+    <div style="height: 100%; width: calc(100% - 258px); border-radius: 4px; border-color: var(--bs-gray-600); border-width: 1px; border-style: solid;">
+      <ChattingArea ParentPage="this" />
+    </div>
+  </div>
+</div>

@@ -1,34 +1,35 @@
-using Grpc.Net.Client;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.DataProtection;
+using Pocco.APIClient.Core;
 using Pocco.Client.Web;
 using Pocco.Client.Web.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Host.UseSerilog((ctx, cfg) => {
+    cfg
+      .Enrich.WithThreadId()
+      // Set log style -> [yyyy-MM-dd HH:mm:ss.fff] [Level] [SourceContext][[ThreadId]] Message NewLine Exception
+      .WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] {Level:u4}: {SourceContext}[{ThreadId}] {Message:lj}{NewLine}{Exception}")
+      .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] {Level:u4}: {SourceContext}[{ThreadId}] {Message:lj}{NewLine}{Exception}")
+      .Enrich.FromLogContext();
+});
+
 builder.Services.AddScoped<ProtectedLocalStorage>();
 builder.Services.AddDataProtection();
 builder.Services.AddScoped<ProtectedLocalStorageProvider>();
 
-builder.Services.AddSingleton(sp =>
-{
-    var connectionString = Environment.GetEnvironmentVariable("API_CONNECTION_URL") ?? throw new InvalidOperationException("API_CONNECTION_URL is not set in environment variables");
-    var grpcChannel = GrpcChannel.ForAddress(connectionString, new GrpcChannelOptions
-    {
-        HttpHandler = new SocketsHttpHandler
-        {
-            PooledConnectionIdleTimeout = TimeSpan.FromMinutes(5),
-            KeepAlivePingDelay = TimeSpan.FromMinutes(1),
-            KeepAlivePingTimeout = TimeSpan.FromSeconds(20),
-            EnableMultipleHttp2Connections = true
-        }
-    });
-    return grpcChannel;
-});
-
 // API Clients
-builder.Services.AddSingleton<GrpcClientFeederProvider>();
+builder.Services.AddSingleton(sp => {
+    return new APIClientConfigurations(APIClientType.User);
+});
+builder.Services.AddScoped(sp => {
+    var config = sp.GetRequiredService<APIClientConfigurations>();
+    var logger = sp.GetRequiredService<ILogger<APIClient>>();
+    return new APIClient(config, logger);
+});
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -36,18 +37,15 @@ builder.Services.AddRazorComponents()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
+if (!app.Environment.IsDevelopment()) {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-app.Use(async (context, next) =>
-{
+app.Use(async (context, next) => {
     const string CookieName = ".Pocco.Client.Web.DataProtection";
-    if (!context.Request.Cookies.ContainsKey(CookieName))
-    {
+    if (!context.Request.Cookies.ContainsKey(CookieName)) {
         // Random bytes
         var randomBytes = new byte[32];
         Random.Shared.NextBytes(randomBytes);
@@ -60,8 +58,7 @@ app.Use(async (context, next) =>
 
         // TODO: Store to cookie to redis
         // TTL short: 15 minutes
-        context.Response.Cookies.Append(CookieName, protectedValue, new CookieOptions
-        {
+        context.Response.Cookies.Append(CookieName, protectedValue, new CookieOptions {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,

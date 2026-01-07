@@ -1,0 +1,37 @@
+<div class="w-100 d-flex flex-column justify-content-start align-items-center gap-1 overflow-scroll" style="height: 0; flex-grow: 1;">
+  @foreach (var item in Chats.Where(c => c.ParentId == string.Empty))
+  {
+    @if (item.IsCategory)
+    {
+      <div class="category_wrapper rounded-2" style="width: 95%; cursor: pointer;">
+        <div class="category d-flex flex-column justify-content-start align-items-start">
+          <div class="category_header d-flex flex-row justify-content-start align-items-center w-100">
+            <i class=" category_arrow bi bi-caret-down-fill"></i>
+            <div class="flex-grow-1 text-truncate">@item.Name</div>
+            <i class="category_header_add-btn bi bi-plus"></i>
+          </div>
+          <div class="category_items_wrapper ps-1 flex-column justify-content-start align-items-center w-100" style="">
+            @foreach (var chat in Chats.Where(c => c.ParentId == item.Id))
+            {
+              <div class="channel_item_wrapper rounded-2 @(chat.IsActive ? "active" : "")" style="width: 100%; cursor: pointer;" @onclick="async (e) => await OnChatSelected(chat.Id)">
+                <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+                  <img src="http://@_cdnAddress/sys-content/images/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+                  <p class="flex-grow-1" style="font-weight: 500; margin: 0;">@chat.Name</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    else
+    {
+      <div class="channel_item_wrapper rounded-2 @(item.IsActive ? "active" : "")" style="width: 95%; cursor: pointer;" @onclick="async (e) => await OnChatSelected(item.Id)">
+        <div class="channel_item p-1 d-flex flex-row justify-content-start align-items-center">
+          <img src="http://@_cdnAddress/sys-content/images/120x120.png" alt="Channel icon" class="rounded-2" style="padding: 0 4px; height: 20px; width: 28px; background-color: transparent;" />
+          <p class="flex-grow-1" style="font-weight: 500; margin: 0;">@item.Name</p>
+        </div>
+      </div>
+    }
+  }
+</div>

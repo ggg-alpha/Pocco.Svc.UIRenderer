@@ -1,0 +1,120 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{razor,css,js,json,html}]
+indent_size = 2
+max_line_length = 0
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# C# ファイル全般
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[*.cs]
+
+# インデントと行長
+indent_style = space
+indent_size = 4
+
+# using ディレクティブ
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# var の使用ルール【Google スタイル】
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# - 組み込み型では var 禁止
+# - 型が明らかな場合は var 推奨
+# - それ以外では明示的型指定
+dotnet_style_var_for_built_in_types = false:suggestion
+dotnet_style_var_when_type_is_apparent = true:suggestion
+dotnet_style_var_elsewhere = false:suggestion
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 波括弧と改行位置
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+csharp_prefer_braces = true:suggestion
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# スペースのルール
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_comma = true
+csharp_space_before_comma = false
+csharp_space_around_binary_operators = before_and_after
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 式ボディメンバーのスタイル
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+csharp_style_expression_bodied_methods = false:suggestion
+csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_properties = when_possible:suggestion
+csharp_style_expression_bodied_accessors = false:suggestion
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 命名規則（PascalCase, camelCase, _camelCase, I prefix）
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## シンボルグループ定義
+dotnet_naming_symbols.public_members.applicable_kinds = class, struct, enum, delegate, method, property, event, field
+dotnet_naming_symbols.public_members.applicable_accessibilities = public, internal
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private, protected, internal
+
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+
+dotnet_naming_symbols.locals_and_parameters.applicable_kinds = local, parameter
+
+## 命名スタイル定義
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+dotnet_naming_style.underscore_camel.capitalization = camel_case
+dotnet_naming_style.underscore_camel.required_prefix = _
+
+dotnet_naming_style.interface_prefix.capitalization = pascal_case
+dotnet_naming_style.interface_prefix.required_prefix = I
+
+## ルール適用
+# 公開メンバー → PascalCase
+dotnet_naming_rule.public_members_must_be_pascal_case.symbols = public_members
+dotnet_naming_rule.public_members_must_be_pascal_case.style = pascal_case
+dotnet_naming_rule.public_members_must_be_pascal_case.severity = suggestion
+
+# プライベート/保護フィールド → _camelCase
+dotnet_naming_rule.private_fields_must_be_underscore_camel.symbols = private_fields
+dotnet_naming_rule.private_fields_must_be_underscore_camel.style = underscore_camel
+dotnet_naming_rule.private_fields_must_be_underscore_camel.severity = suggestion
+
+# インターフェース → I* (PascalCase)
+dotnet_naming_rule.interfaces_must_be_prefixed_with_I.symbols = interfaces
+dotnet_naming_rule.interfaces_must_be_prefixed_with_I.style = interface_prefix
+dotnet_naming_rule.interfaces_must_be_prefixed_with_I.severity = suggestion
+
+# ローカル変数 & 引数 → camelCase
+dotnet_naming_rule.locals_and_parameters_must_be_camel_case.symbols = locals_and_parameters
+dotnet_naming_rule.locals_and_parameters_must_be_camel_case.style = camel_case
+dotnet_naming_rule.locals_and_parameters_must_be_camel_case.severity = suggestion

@@ -1,0 +1,53 @@
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.search_org_input {
+  background: var(--color_gray);
+  color: white;
+  box-shadow: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 16px;
+  transition: border 0.3s ease;
+}
+
+.search_org_input::placeholder {
+  color: #e0e0e0;
+}
+
+.search_org_input:focus {
+  box-shadow: none;
+  border: 1px solid #5e69ff;
+  outline: none;
+
+  &::placeholder {
+    color: transparent;
+  }
+}
+
+.open_join_to_org_btn,
+.open_create_org_btn {
+  background: var(--color_mint);
+  opacity: 0.7;
+  color: var(--color_teal);
+  border: 2px solid transparent;
+  transition: opacity 0.2s ease-in-out, border 0.2s ease-in-out;
+}
+
+.open_join_to_org_btn:hover,
+.open_create_org_btn:hover {
+  opacity: 0.8;
+  border: 2px solid #b0b6ff;
+}
+
+.organization_list_item {
+  border: 1px solid var(--color_gray);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.organization_list_item:hover {
+  background-color: #b4b4b470;
+}

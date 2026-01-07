@@ -1,0 +1,139 @@
+.workspce_org_item {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 5px;
+
+  a {
+    gap: 5px;
+    text-decoration: none;
+    color: white;
+  }
+
+  &:hover {
+    background-color: #ffffff33;
+    cursor: pointer;
+
+    a {
+      color: #ffffff;
+    }
+  }
+
+  img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  p {
+    font-weight: bold;
+  }
+}
+
+.sidebar-org_action-btn {
+  a {
+    gap: 5px;
+    text-decoration: none;
+    color: white;
+  }
+}
+
+.render_area {
+  input[type="text"] {
+    width: 75%;
+    height: 35px;
+    margin-top: 4rem;
+
+    background-color: transparent;
+    border: 1px solid var(--color_mint);
+    border-radius: 8px;
+    padding: 1px 3px;
+
+    &:focus {
+      color: white;
+      outline: none;
+    }
+
+    &::placeholder {
+      color: var(--color_mint);
+    }
+
+    &:focus::placeholder {
+      color: transparent;
+    }
+  }
+
+  .render_area-recent_activities {
+    width: 85%;
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+
+    border: 1px solid transparent;
+
+    .item {
+      height: calc(100% - 2rem);
+      max-width: 300px;
+      margin: 1rem;
+
+      border: 1px solid #6e6e6e;
+      border-radius: 5px;
+
+      .component {
+        border: 1px solid gray;
+        border-radius: 5px;
+
+        &:hover {
+          background-color: #ffffff33;
+          cursor: pointer;
+        }
+
+        .message_container {
+          p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+  }
+
+  .render_area-recomended_organizations {
+    width: 85%;
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+
+    border: 1px solid transparent;
+
+    .item {
+      height: calc(100% - 2rem);
+      max-width: 300px;
+      margin: 1rem;
+
+      border: 1px solid #6e6e6e;
+      border-radius: 5px;
+
+      .component {
+        border: 1px solid gray;
+        border-radius: 5px;
+
+        &:hover {
+          background-color: #ffffff33;
+          cursor: pointer;
+        }
+
+        .message_container {
+          /* p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          } */
+        }
+      }
+    }
+  }
+}

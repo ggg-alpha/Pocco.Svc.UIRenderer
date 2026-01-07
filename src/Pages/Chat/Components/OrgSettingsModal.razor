@@ -1,0 +1,216 @@
+<div class="w-100 h-100 flex-column justify-content-center align-items-center position-absolute ps-1 pe-1" style="top: 0; left: 0; z-index: 500; display: @(_hideModal == true ? "none" : "flex"); background-color: #96909070;" @onclick="async (e) => await Hide(e)">
+  <div class="w-100 d-flex flex-row justify-content-center align-items-start rounded-3 position-relative p-1" style="max-width: 80%; height: 800px; z-index: 501; background: var(--color_teal);" @onclick:stopPropagation="true">
+
+    <button class="btn position-absolute top-0 end-0 m-2" style="z-index: 502;" title="Close" @onclick="async (e) => await Hide(e)">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <div class="h-100 d-flex flex-column p-1" style="width: 250px; border-right: 1px solid var(--bs-gray-600);">
+      <h4 class="w-100 d-flex flex-row align-items-center justify-content-center mb-2" style="height: 45px; border-bottom: 1px solid var(--bs-gray-600); font-weight: bold;">組織の設定</h4>
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.General)">
+        <h5>一般</h5>
+      </div>
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.Roles)">
+        <h5>役割・権限</h5>
+      </div>
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.Chats)">
+        <h5>チャット</h5>
+      </div>
+      <div class="settings_item w-100 d-flex flex-row align-items-center justify-content-start p-2 rounded-2" @onclick="async () => await ChangeMode(OrgSettingsMode.Others)">
+        <h5>その他</h5>
+      </div>
+    </div>
+    <div class="h-100 flex-grow-1 d-flex flex-column">
+      @if (_orgSettingsMode is OrgSettingsMode.General)
+      {
+        <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+          <h4>一般設定</h4>
+          <div class="mt-4 p-3  d-flex flex-column align-items-start justify-content-start" style="border: 1px solid #ccc; border-radius: 5px;">
+            <div class="pt-2" id="uploadForm" novalidate>
+
+              <div class="field">
+                <div class="d-flex flex-row justify-content-center align-items-center" style="gap:12px;">
+                  <div class="preview d-flex flex-column justify-content-center align-items-center" id="imagePreview" aria-live="polite">
+                    <i class="bi bi-image" style="font-size:45px;color:#ccc;"></i>
+                    <p style="font-size: 12px;">アップロード</p>
+                  </div>
+                  <div class="d-flex flex-column">
+                    <input id="image" name="image" type="file" accept="image/*" style="display:none;" />
+                    <div class="hint">対応形式: JPG, PNG, GIF 等。最大 5MB。</div>
+                    <div class="hint">まだダミー。ごめん (&gt; _ &lt;)</div>
+                    <div class="error" id="imageError" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="name">名前（必須・30文字以内）</label>
+              <input id="name" name="name" type="text" maxlength="30" required placeholder="例) Genius haskey" value="@_currentOrgName" @oninput="async (e) => await OnOrganizationNameChanged(e)" />
+              <div class="error">
+                @if (string.IsNullOrEmpty(OrganizationName))
+                {
+                  <div>Error</div>
+                }
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="description">簡単な説明（任意・200文字以内）</label>
+              <textarea id="description" name="description" rows="4" maxlength="200" placeholder="この組織について短く説明してください（例: とても優秀なハスキーの集まりです）" value="@_currentOrgDescription" @oninput="async (e) => await OnOrganizationDescriptionChanged(e)"></textarea>
+            </div>
+
+            <dvi class="d-flex flex-row align-items-end justify-content-end w-100 mt-3">
+              <button class="btn btn-success" disabled="@(!_canSaveChanges)" @onclick="async (e) => await OnUpdateOrganizationBtnClicked(e)">保存</button>
+            </dvi>
+          </div>
+
+          <hr class="my-4" />
+
+          <div class="mt-4 p-3  d-flex flex-row align-items-center justify-content-between" style="border: 1px solid var(--color_mint); border-radius: 5px;">
+            <div style="font-weight: bold; color: var(--color_mint);">
+              所有権を他のメンバーに移管します。
+            </div>
+            <button class="btn btn-success disabled" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">所有権の移管</button>
+          </div>
+          <div class="mt-4 p-3  d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
+            <div class="text-danger" style="font-weight: bold;">
+              組織から退会します。
+            </div>
+            <button class="btn btn-danger" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">退会</button>
+          </div>
+          <div class="mt-4 p-3  d-flex flex-row align-items-center justify-content-between" style="border: 1px solid red; border-radius: 5px;">
+            <div class="text-danger" style="font-weight: bold;">
+              組織を削除します。（復元不可）
+            </div>
+            <button class="btn btn-danger" @onclick="async (e) => await OnDeleteOrganizationBtnClicked(e)">削除</button>
+          </div>
+        </div>
+      }
+      else if (_orgSettingsMode is OrgSettingsMode.Roles)
+      {
+        <div class="p-3 d-flex flex-column flex-grow-1" style="min-height: 0;">
+          <h4>ロール設定</h4>
+          <div class="d-flex flex-row mt-4" style="height: calc(100% - 40px); min-height: 0;">
+            <div class="h-100 ps-2 pe-2" style="width: 200px; overflow-y: auto; min-height: 0; border-right: 1px solid #ccc;">
+              @foreach (var role in Roles)
+              {
+                <div class="role_item p-1 d-flex flex-row align-items-center justify-content-start gap-1">
+                  <div class="rounded-circle d-flex justify-content-center align-items-center" style="width:15px; height:15px; background-color:#a5a5a5;"></div>
+                  <div class="" style="font-weight: bold;">
+                    @role.Name
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="flex-grow-1 ms-4 me-4 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+              @foreach (var role in Roles) @* TODO: Selected roleにする*@
+              {
+                <div class="mt-3">
+                  <label for="roleName">ロール名</label>
+                  <input id="roleName" name="roleName" type="text" maxlength="30" required placeholder="例) Moderator" value="@role.Name" />
+                </div>
+                <div class="mt-3">
+                  <label for="roleColor">ロールカラー</label>
+                  <input id="roleColor" name="roleColor" type="color" disabled />
+                </div>
+                <div class="mt-4">
+                  <h5>権限設定</h5>
+                  @*
+                    <div class="form-check">
+                      <input class="ms-1 form-check-input" type="checkbox" value="" id="perm1" />
+                      <label class="form-check-label" for="perm1">
+                        チャットの作成・削除
+                      </label>
+                    </div>
+                  *@
+                  <p>今後対応予定です。</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+      else if (_orgSettingsMode is OrgSettingsMode.Chats)
+      {
+        <div class="p-3 d-flex flex-column flex-grow-1" style="min-height: 0; overflow-y: auto;">
+          <h4>チャット設定</h4>
+          <div class="d-flex flex-row mt-4" style="height: calc(100% - 40px); min-height: 0;">
+            <div class="h-100 ps-2 pe-2" style="width: 200px; overflow-y: auto; min-height: 0; border-right: 1px solid #ccc;">
+              @foreach (var chat in Chats)
+              {
+                <div class="role_item p-1 d-flex flex-row align-items-center justify-content-start gap-1" id="@chat.ChatId" @onclick="async (e) => await OnChatSelected(chat.ChatId)">
+                  <i class="bi bi-hash rounded-circle d-flex justify-content-center align-items-center" style="width:15px; height:15px; font-size:18px;"></i>
+                  <div class="" style="font-weight: bold;">
+                    @chat.Name
+                  </div>
+                </div>
+              }
+              <hr class="my-2" />
+              <div class="role_item p-1 d-flex flex-row align-items-center justify-content-start gap-1" style="color: #ffffff;" @onclick="async (e) => await OnChatCreateClicked(e)">
+                <i class="bi bi-plus-square-fill rounded-circle d-flex justify-content-center align-items-center" style="width:15px; height:15px; font-weight: bold; color: #15b100;"></i>
+                <div class="" style="font-weight: bold;">
+                  チャットを作成
+                </div>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-4 me-4 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+              @if (_selectedChat is null)
+              {
+                <div class="mt-3">
+                  チャットを作成するか、リストから選択してください。
+                </div>
+              }
+              else
+              {
+                <div class="mt-3">
+                  <label for="chatName">チャット名</label>
+                  <input id="chatName" name="chatName" type="text" maxlength="30" required placeholder="例) Free talk" @bind="@_selectedChat.Name" />
+                </div>
+                @if (string.IsNullOrEmpty(_selectedChat.ChatId))
+                {
+                  <div class="mt-4">
+                    <button class="btn btn-success" @onclick="async (e) => await OnChatCreateBtnClicked(e)">
+                      作成
+                    </button>
+                  </div>
+                }
+                else
+                {
+                  <div class="mt-3">
+                    <label for="chatDescription">チャットルール</label>
+                    <textarea id="chatDescription" name="chatDescription" rows="4" maxlength="400" placeholder="例) 雑談しよう！" @bind="@_selectedChat.Description" />
+                  </div>
+                }
+                <div class="mt-4">
+                  <h5>権限設定</h5>
+                  @*
+                  <div class="form-check">
+                    <input class="ms-1 form-check-input" type="checkbox" value="" id="perm1" />
+                    <label class="form-check-label" for="perm1">
+                      チャットの作成・削除
+                    </label>
+                  </div>
+                *@
+                  <p>今後対応予定です。</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+      else if (_orgSettingsMode is OrgSettingsMode.Others)
+      {
+        <div class="p-3 d-flex flex-column" style="min-height: 0; overflow-y: auto;">
+          <h4>その他の設定</h4>
+          <div class="mt-4">
+            <p>🚧ここはまだ工事中です。🚧</p>
+          </div>
+        </div>
+      }
+      else
+      {
+        <p>Unknown</p>
+      }
+    </div>
+  </div>
+</div>

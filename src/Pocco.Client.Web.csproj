@@ -4,12 +4,16 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <BlazorWebassemblyEnableLinking>false</BlazorWebassemblyEnableLinking>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
         <PackageReference Include="Grpc.Reflection" Version="2.71.0" />
-        <PackageReference Include="Pocco.Svc.CoreAPI.Grpc.Clients" Version="0.0.1-build-1761396923" />
+        <PackageReference Include="Pocco.APIClient.Core" Version="0.0.1-build-1766990278" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

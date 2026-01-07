@@ -1,42 +1,62 @@
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Pocco.Client.Web.Services;
+using Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Register;
 
-partial class Page : ComponentBase
-{
-    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] private IJSRuntime JSRuntime { get; set; } = null!;
-    [Inject] private ILogger<Page> Logger { get; set; } = null!;
-    [Inject] private GrpcClientFeederProvider ClientFeederProvider { get; set; } = null!;
-    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
-    private GrpcClientFeeder? _clientFeeder;
-
+partial class Page : ComponentBase {
     private string email = string.Empty;
     private string emailError = string.Empty;
 
     private string password = string.Empty;
     private string passwordError = string.Empty;
 
-    private bool isLoading = false;
     private bool hasEmailError = false;
     private bool hasPasswordError = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            var scopedServiceId = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "scopedServiceId");
-            var id = Guid.TryParse(scopedServiceId, out var guid) ? guid : Guid.NewGuid();
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "scopedServiceId", id.ToString());
 
-            _clientFeeder = ClientFeederProvider.GetOrCreate(id, () => new GrpcClientFeeder(id, LocalStorageProvider, Logger));
+    [Inject] private APIClient.Core.APIClient ApiClient { get; set; } = null!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] private ProtectedLocalStorageProvider LocalStorageProvider { get; set; } = null!;
+    [Inject] protected ILogger<Page> Logger { get; set; } = null!;
+    [Inject] private IConfiguration _configuration { get; set; } = null!;
+
+    private string _cdnAddress { get; set; } = string.Empty;
+
+    protected override void OnInitialized() {
+        _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            // Verify session
+            var sessionData = await LocalStorageProvider.GetSessionDataAsync();
+            if (sessionData is not null) {
+                Logger.LogInformation($"Session data found for user ID: {sessionData.AccountId}");
+                try {
+                    var verified = await ApiClient.SessionManager.VerifySessionAsync(sessionData);
+
+                    if (verified) {
+                        NavigationManager.NavigateTo("/chat/direct-messages");
+                    } else {
+                        await LocalStorageProvider.ClearSessionDataAsync();
+                    }
+                } catch {
+                    await LocalStorageProvider.ClearSessionDataAsync();
+                }
+            } else {
+                Logger.LogWarning("No session data found in local storage. Staying on register page.");
+            }
+
+            Console.WriteLine("Chat Page Rendered");
         }
     }
 
-    private async Task OnEmailInputChange(ChangeEventArgs e)
-    {
+    private async Task OnEmailInputChange(ChangeEventArgs e) {
         var value = e.Value?.ToString() ?? string.Empty;
 
         var isValid = string.IsNullOrWhiteSpace(value);
@@ -47,8 +67,7 @@ partial class Page : ComponentBase
 
         await Task.CompletedTask;
     }
-    private async Task OnPasswordInputChange(ChangeEventArgs e)
-    {
+    private async Task OnPasswordInputChange(ChangeEventArgs e) {
         var value = e.Value?.ToString() ?? string.Empty;
 
         var empty = string.IsNullOrWhiteSpace(value);
@@ -59,29 +78,26 @@ partial class Page : ComponentBase
     }
 
 
-    private async Task HandleRegister()
-    {
-        if (_clientFeeder == null)
-        {
-            Logger.LogError("GrpcClientFeeder is not initialized.");
-            return;
-        }
+    private async Task HandleRegister() {
+        try {
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            var passwordHash = SHA256.HashData(passwordBytes);
+            var passwordHashString = Convert.ToBase64String(passwordHash);
 
-        try
-        {
-            await _clientFeeder.RegisterAccountAsync(email, password);
+
+            await ApiClient.CreateAccountAsync(new V0AccountRegisterRequest {
+                Email = email,
+                Password = passwordHashString
+            });
 
             NavigationManager.NavigateTo("/login");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Logger.LogError($"Registration failed: {ex.Message}");
             return;
         }
     }
 
-    private void GoToLoginPage()
-    {
+    private void GoToLoginPage() {
         NavigationManager.NavigateTo("/login");
     }
 }

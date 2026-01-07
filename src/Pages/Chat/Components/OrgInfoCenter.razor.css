@@ -1,0 +1,13 @@
+.action_item_wrapper {
+  width: 100%;
+  cursor: pointer;
+}
+
+.action_item_wrapper:hover {
+  background-color: #e0e0e070;
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

@@ -2,40 +2,33 @@
 @layout WelcomeLayout
 
 <div class="login-wrapper">
-    <div class="login-header">
-        <img src="@Assets["/assets/logos/pocco-icon.png"]" alt="Pocco Logo" class="login-logo">
-        <h1 class="login-title">ログイン</h1>
+  <div class="login-header">
+    <img src="http://@_cdnAddress/sys-content/logos/pocco-icon.png" alt="Pocco Logo" class="login-logo">
+    <h1 class="login-title">ログイン</h1>
+  </div>
+  <div class="login-form">
+    <div class="username-input">
+      <div class="input-info">
+        <label for="email">メールアドレス</label>
+        <label for="email" id="emailError">@emailError</label>
+      </div>
+      <input type="email" id="email" class="@(hasEmailError ? "error" : "")" name="email" placeholder="Enter your email" @oninput="async (e) => await OnEmailInputChange(e)" @bind="email" required>
     </div>
-    <div class="login-form">
-        <div class="username-input">
-            <div class="input-info">
-                <label for="email">メールアドレス</label>
-                <label for="email" id="emailError">@emailError</label>
-            </div>
-            <input type="email" id="email" class="@(hasEmailError ? "error" : "")" name="email"
-                placeholder="Enter your email" @oninput="async (e) => await OnEmailInputChange(e)" @bind="email"
-                required>
-        </div>
-        <div class="password-input">
-            <div class="input-info">
-                <label for="password">パスワード</label>
-                <label for="password" id="passwordError">@passwordError</label>
-            </div>
-            <input type="password" id="password" class="@(hasPasswordError ? "error" : "")" name="password"
-                placeholder="Enter your password" @oninput="async (e) => await OnPasswordInputChange(e)"
-                @bind="password" required>
-        </div>
-
-        <button type="submit" class="login-btn" @onclick="async () => await HandleLogin()"
-            disabled="@(isLoading || hasEmailError || hasPasswordError || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))">
-            <span class="btn-text">ログイン</span>
-        </button>
-
-        <div class="gotto-register-text">
-            <span>アカウントをお持ちではありませんか？</span>
-            <button class="register-link" @onclick="() => GoToRegisterPage()">登録</button>
-        </div>
+    <div class="password-input">
+      <div class="input-info">
+        <label for="password">パスワード</label>
+        <label for="password" id="passwordError">@passwordError</label>
+      </div>
+      <input type="password" id="password" class="@(hasPasswordError ? "error" : "")" name="password" placeholder="Enter your password" @oninput="async (e) => await OnPasswordInputChange(e)" @bind="password" required>
     </div>
+
+    <button type="submit" class="login-btn" @onclick="async () => await HandleLogin()" disabled="@(isLoading || hasEmailError || hasPasswordError || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))">
+      <span class="btn-text">ログイン</span>
+    </button>
+
+    <div class="gotto-register-text">
+      <span style="color: black;">アカウントをお持ちではありませんか？</span>
+      <button class="register-link" @onclick="() => GoToRegisterPage()">登録</button>
+    </div>
+  </div>
 </div>
-
-<ClientHolder />
