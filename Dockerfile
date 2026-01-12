@@ -12,4 +12,4 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 EXPOSE 5099
-ENTRYPOINT ["dotnet", "Pocco.Client.Web.dll"]
+CMD [ "/app/Pocco.Client.Web" ]
