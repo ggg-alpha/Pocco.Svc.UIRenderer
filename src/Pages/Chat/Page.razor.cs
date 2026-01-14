@@ -8,7 +8,7 @@ using Pocco.Libs.Protobufs.CoreAPI.Services;
 
 namespace Pocco.Client.Web.Pages.Chat;
 
-public partial class Page : ComponentBase {
+public partial class Page : ComponentBase, IDisposable {
     [Parameter] public string? OrgId { get; set; } = string.Empty;
 
     [Inject] public ILogger<Page> Logger { get; set; } = null!;
@@ -32,6 +32,13 @@ public partial class Page : ComponentBase {
 
     [Inject] private IConfiguration _configuration { get; set; } = null!;
     private string _cdnAddress { get; set; } = string.Empty;
+
+    public void Dispose() {
+        ApiClient.EventListener.Dispose();
+        ApiClient.Dispose();
+
+        GC.SuppressFinalize(this);
+    }
 
     protected override void OnInitialized() {
         _cdnAddress = _configuration["CDN_ADDRESS"] ?? "http://localhost:5197";
