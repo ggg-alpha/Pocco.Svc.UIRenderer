@@ -1,0 +1,54 @@
+@page "/meetingui"
+@layout Empty
+
+<div class="meeting-ui">
+  <div class="header">
+    <span>ミーティングUIデモ</span>
+    <div class="container">
+
+      <!-- 部屋追加フォーム -->
+      <div class="room-list">
+        <div class="add-room-box">
+          <input type="text" id="new-room-name" placeholder="部屋名を入力">
+          <button onclick="addRoom()">部屋を追加</button>
+        </div>
+
+        <div id="room-list"></div>
+      </div>
+
+      <!-- 詳細パネル -->
+      <div class="detail-panel">
+        <h2 id="room-title">部屋を選択してください</h2>
+
+        <div class="reserve-form">
+          <input type="text" id="username" placeholder="主催者名">
+
+          <input type="date" id="date">
+
+          <label>開始時間</label>
+          <select id="start-time"></select>
+
+          <label>終了時間</label>
+          <select id="end-time"></select>
+
+          <select id="tag">
+            <option value="定例">定例</option>
+            <option value="1on1">1on1</option>
+            <option value="プロジェクト">プロジェクト</option>
+            <option value="面談">面談</option>
+          </select>
+
+          <input type="text" id="participant" placeholder="参加者名を追加">
+          <button onclick="addParticipant()">参加者を追加</button>
+
+          <div id="participant-list-view"></div>
+
+          <button onclick="reserve()">ミーティングを作成</button>
+        </div>
+
+        <h3>ミーティング一覧</h3>
+        <div id="reservation-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
