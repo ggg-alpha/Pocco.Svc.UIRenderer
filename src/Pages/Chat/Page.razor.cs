@@ -176,7 +176,8 @@ public partial class Page : ComponentBase, IDisposable {
                         $"{evt.Message.MessageId}",
                         $"{user.Username}",
                         converted,
-                        $"{evt.Message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}"
+                        $"{evt.Message.CreatedAt.ToDateTime().ToString("yyyy/MM/dd HH:mm:ss")}",
+                        _cdnAddress
                     );
                 } catch (Exception ex) {
                     Logger.LogWarning("Error occurred while generating message: {0}", ex.Message);
